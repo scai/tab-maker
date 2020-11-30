@@ -1,0 +1,17 @@
+tab-maker-song {
+  border: solid 1px silver;
+  border-radius: 10px;
+  display: block;
+  padding: 1em;
+}
+
+tab-maker-title {
+  display: block;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+tab-maker-measure {
+  border-right: solid 1px black;
+  padding: 0 1em;
+}
