@@ -14,4 +14,18 @@ tab-maker-title {
 tab-maker-measure {
   border-right: solid 1px black;
   padding: 0 1em;
+  display: inline;
+  width: 1em;
+  height: 1em;
+}
+
+tm-body {
+}
+tm-note {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+tm-newline {
+  display: block;
 }
