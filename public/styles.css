@@ -29,3 +29,7 @@ tm-note {
 tm-newline {
   display: block;
 }
+
+tab-maker-block {
+  display: inline-block;
+}
