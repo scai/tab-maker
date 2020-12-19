@@ -1,35 +1,18 @@
-tab-maker-song {
-  border: solid 1px silver;
-  border-radius: 10px;
-  display: block;
-  padding: 1em;
-}
-
-tab-maker-title {
-  display: block;
-  font-size: 2em;
-  font-weight: bold;
-}
-
-tab-maker-measure {
-  border-right: solid 1px black;
-  padding: 0 1em;
-  display: inline;
-  width: 1em;
-  height: 1em;
-}
-
-tm-body {
-}
-tm-note {
-  display: inline-flex;
-  flex-direction: column;
-}
-
-tm-newline {
-  display: block;
-}
-
 tab-maker-block {
   display: inline-block;
+  margin: .25rem;
+}
+
+tab-maker-pipe {
+  display: inline-block;
+  width: 1rem;
+  border-right: solid 1px;
+  margin-right: 1rem;
+  height: 1rem;
+}
+
+#tab-script {
+  display: block;
+  width: 80%;
+  height: 10rem;
 }

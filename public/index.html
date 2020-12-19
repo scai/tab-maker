@@ -10,50 +10,9 @@
 </head>
 
 <body>
-  <tab-maker-block chord="C" pitch="1" lyrics="今天"></tab-maker-block>
-  </tab-maker-block>
-
-  <tab-maker-block chord="Dm" pitch="2" lyrics="愛永"></tab-maker-block>
-  </tab-maker-block>
-
-  <tab-maker-block chord="G7" pitch="3" lyrics="為"></tab-maker-block>
-  </tab-maker-block>
-
-  <tab-maker-pipe>|</tab-maker-pipe>
-  <hr>
-
-  <tab-maker-song>
-    <tab-maker-title>愛永不止息</tab-maker-title>
-
-    <tm-body>
-    <tab-maker-measure>
-    </tab-maker-measure>
-      <tm-chord>C</tm-chord>
-      <tm-note>
-        <tm-pitch>3</tm-pitch>
-        <tm-lyrics>茫</tm-lyrics>
-      </tm-note>
-      <tm-note>
-        <tm-pitch>3</tm-pitch>
-        <tm-lyrics>茫</tm-lyrics>
-      </tm-note>
-      <tm-note>
-        <tm-pitch>3</tm-pitch>
-        <tm-lyrics>人</tm-lyrics>
-      </tm-note>
-      <tm-note>
-        <tm-pitch>3</tm-pitch>
-        <tm-lyrics>海</tm-lyrics>
-      </tm-note>
-
-    <tab-maker-measure></tab-maker-measure>深深期待 
-    <tab-maker-measure></tab-maker-measure>讓生命充滿 平</tab-maker-measure>
-    <tab-maker-measure></tab-maker-measure>安的真愛 
-    <tm-newline></tm-newline>
-    <tab-maker-measure></tab-maker-measure>為你祝福
-    <tab-maker-measure> </tab-maker-measure>聽你傾訴
-  </tm-body>
-  </tab-maker-song>
+  <div id="tab-root">
+  </div>
+  <textarea id="tab-script">|[C](1)`今天`,(2)`愛`,(3)`永`|[G7](3)`為`|</textarea>
   <script>
     document.addEventListener('DOMContentLoaded', tabMakerMain);
   </script>
