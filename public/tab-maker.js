@@ -1,9 +1,9 @@
 function tabMakerMain() {
-  console.log('Tab Maker');
   const tabScript = document.getElementById('tab-script');
   tabScript.addEventListener('change', (event) => {
     renderTab(event.target.value);
   });
+  renderTab(tabScript.value);
 }
 
 function getMatchOrNull(match) {
@@ -33,15 +33,17 @@ function renderBlock(tabRoot, b) {
 
 function renderMeasure(tabRoot, m) {
   const blocks = m.split(',');
+  const measureDiv = document.createElement("tab-maker-measure");
   blocks.map(b => b.trim())
-    .forEach(b => renderBlock(tabRoot, b));
-  tabRoot.appendChild(document.createElement("tab-maker-pipe"));
+    .forEach(b => renderBlock(measureDiv, b));
+  if (measureDiv.childElementCount == 0) return;
+  tabRoot.appendChild(measureDiv);
 }
 
 function renderTab(script) {
   const tabRoot = document.getElementById('tab-root');
   tabRoot.innerHTML = '';
-  const measures = script.split('|');
+  const measures = script.trim().split('|');
   measures.forEach(m => renderMeasure(tabRoot, m));
 }
 
@@ -51,32 +53,28 @@ class TabMakerBlock extends HTMLElement {
     this.root = this.attachShadow({ mode: 'open' });
     this.root.innerHTML = `
       <style>
-        .tm-block {
-
-        }
-
-        .tm-block input {
-          display: block;
-          width: 100%;
-          height: 100%;
-        }
       </style>
-      <div class="tm-chord"></div>
-      <div class="tm-pitch"></div>
-      <div class="tm-lyrics"></div>
+      <div class="block-root">
+        <div class="block tm-chord"></div>
+        <div class="block tm-pitch"></div>
+        <div class="block tm-lyrics"></div>
+      </div>
       `;
   }
 
   connectedCallback() {
-    this.chordDiv = this.root.querySelector(".tm-chord ");
-    this.pitchDiv = this.root.querySelector(".tm-pitch ");
-    this.lyricsDiv = this.root.querySelector(".tm-lyrics ");
-    this.chord = this.getAttribute("chord");
-    this.pitch = this.getAttribute("pitch");
-    this.lyrics = this.getAttribute("lyrics");
-    this.chordDiv.textContent = this.chord;
-    this.pitchDiv.textContent = this.pitch;
-    this.lyricsDiv.textContent = this.lyrics;
+    const chord = this.getAttribute("chord");
+    if (chord) {
+      this.root.querySelector(".tm-chord ").textContent = chord;
+    }
+    const pitch = this.getAttribute("pitch");
+    if (pitch) {
+      this.root.querySelector(".tm-pitch ").textContent = pitch;
+    }
+    const lyrics = this.getAttribute("lyrics");
+    if (lyrics) {
+      this.root.querySelector(".tm-lyrics ").textContent = lyrics;
+    }
   }
 }
 
