@@ -16,11 +16,11 @@ function renderBlock(tabRoot, b) {
   }
   const chord = getMatchOrNull(b.match(/\[(.+)\]/));
   const pitch = getMatchOrNull(b.match(/\((.+)\)/));
-  const lyrics = getMatchOrNull(b.match(/`(.+)`/));;
+  const lyrics = getMatchOrNull(b.match(/`(.+)`/));
   console.log(`Chord: ${chord}, Pitch: ${pitch}, Lyrics: ${lyrics}`);
   const newBlock = new TabMakerBlock();
   if (chord) {
-    newBlock.setAttribute('chord', chord);
+    newBlock.setAttribute('chord', ChordUtil.transpose('C', chord));
   }
   if (pitch) {
     newBlock.setAttribute('pitch', pitch);
@@ -47,6 +47,40 @@ function renderTab(script) {
   measures.forEach(m => renderMeasure(tabRoot, m));
 }
 
+/**
+ * Transposes chord degrees into a given key.
+ * Examples: IV-6, iii-9, ii-7b5
+ */
+class ChordUtil {
+  static TRANSPOSE_MAP = {
+    'C': ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
+    'G': ['G', 'A', 'B', 'C', 'D', 'E', '#F'],
+  }
+  static MAJOR_CHORDS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
+  static MINOR_CHORDS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii'];
+  static transpose(key, script) {
+    if (script.length == 0) return '';
+    let result = '';
+    const parts = script.split('-');
+    const chord = parts.length > 0 ? parts[0] : script;
+    const extension = parts.length > 1 ? parts[1] : '';
+    const majorIndex = ChordUtil.MAJOR_CHORDS.indexOf(chord);
+    if (majorIndex >=0) {
+      result = ChordUtil.TRANSPOSE_MAP[key][majorIndex];
+    } else {
+      const minorIndex = ChordUtil.MINOR_CHORDS.indexOf(chord);
+      if (minorIndex >=0) {
+        result = ChordUtil.TRANSPOSE_MAP[key][minorIndex] + 'm';
+      } else {
+        console.log(`Unknown chord ${script}`);
+      }
+    }
+    if (extension.length > 0) {
+      return result + extension;
+    }
+    return result;
+  }
+}
 class TabMakerBlock extends HTMLElement {
   constructor() {
     super();
