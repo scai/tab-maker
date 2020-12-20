@@ -1,6 +1,13 @@
 function tabMakerMain() {
   const tabScript = document.getElementById('tab-script');
   tabScript.addEventListener('change', renderTab);
+
+  // Triggers render when a block or measure ends.
+  tabScript.addEventListener('keydown', (event) => {
+    if (event.key == ',' || event.key == '|') {
+      renderTab();
+    }
+  });
   document.getElementById('key-select').addEventListener('change', renderTab);
   renderTab();
 }
@@ -13,6 +20,8 @@ function renderBlock(tabRoot, b) {
   if (!b || b.length == 0) {
     return;
   }
+
+  // Matches [chord] (pitch) lyrics
   const match = b.match(/(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))\s*(?:(?<lyrics>.+))/);
   if (!match) return;
   const chord = match.groups['chord'];
@@ -68,11 +77,11 @@ class ChordUtil {
     const chord = parts.length > 0 ? parts[0] : script;
     const extension = parts.length > 1 ? parts[1] : '';
     const majorIndex = ChordUtil.MAJOR_CHORDS.indexOf(chord);
-    if (majorIndex >=0) {
+    if (majorIndex >= 0) {
       result = ChordUtil.TRANSPOSE_MAP[key][majorIndex];
     } else {
       const minorIndex = ChordUtil.MINOR_CHORDS.indexOf(chord);
-      if (minorIndex >=0) {
+      if (minorIndex >= 0) {
         result = ChordUtil.TRANSPOSE_MAP[key][minorIndex] + 'm';
       } else {
         console.log(`Unknown chord ${script}`);
