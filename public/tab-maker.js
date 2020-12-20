@@ -1,9 +1,8 @@
 function tabMakerMain() {
   const tabScript = document.getElementById('tab-script');
-  tabScript.addEventListener('change', (event) => {
-    renderTab(event.target.value);
-  });
-  renderTab(tabScript.value);
+  tabScript.addEventListener('change', renderTab);
+  document.getElementById('key-select').addEventListener('change', renderTab);
+  renderTab();
 }
 
 function getMatchOrNull(match) {
@@ -14,13 +13,16 @@ function renderBlock(tabRoot, b) {
   if (!b || b.length == 0) {
     return;
   }
-  const chord = getMatchOrNull(b.match(/\[(.+)\]/));
-  const pitch = getMatchOrNull(b.match(/\((.+)\)/));
-  const lyrics = getMatchOrNull(b.match(/`(.+)`/));
+  const match = b.match(/(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))\s*(?:(?<lyrics>.+))/);
+  if (!match) return;
+  const chord = match.groups['chord'];
+  const pitch = match.groups['pitch'];
+  const lyrics = match.groups['lyrics'];
   console.log(`Chord: ${chord}, Pitch: ${pitch}, Lyrics: ${lyrics}`);
   const newBlock = new TabMakerBlock();
   if (chord) {
-    newBlock.setAttribute('chord', ChordUtil.transpose('C', chord));
+    const key = document.getElementById('key-select').value;
+    newBlock.setAttribute('chord', ChordUtil.transpose(key, chord));
   }
   if (pitch) {
     newBlock.setAttribute('pitch', pitch);
@@ -40,7 +42,8 @@ function renderMeasure(tabRoot, m) {
   tabRoot.appendChild(measureDiv);
 }
 
-function renderTab(script) {
+function renderTab() {
+  const script = document.getElementById('tab-script').value;
   const tabRoot = document.getElementById('tab-root');
   tabRoot.innerHTML = '';
   const measures = script.trim().split('|');
