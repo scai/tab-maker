@@ -53,6 +53,8 @@ class TabMakerBlock extends HTMLElement {
     this.root = this.attachShadow({ mode: 'open' });
     this.root.innerHTML = `
       <style>
+        .block { height: 1.1em; }
+        .block-root { padding: 1px; }
       </style>
       <div class="block-root">
         <div class="block tm-chord"></div>
@@ -64,17 +66,15 @@ class TabMakerBlock extends HTMLElement {
 
   connectedCallback() {
     const chord = this.getAttribute("chord");
-    if (chord) {
-      this.root.querySelector(".tm-chord ").textContent = chord;
-    }
+
+    this.root.querySelector(".tm-chord ").textContent = chord ? chord : '';
+
     const pitch = this.getAttribute("pitch");
-    if (pitch) {
-      this.root.querySelector(".tm-pitch ").textContent = pitch;
-    }
+    this.root.querySelector(".tm-pitch ").textContent = pitch ? pitch : '';
     const lyrics = this.getAttribute("lyrics");
-    if (lyrics) {
-      this.root.querySelector(".tm-lyrics ").textContent = lyrics;
-    }
+
+    this.root.querySelector(".tm-lyrics ").textContent = lyrics ? lyrics : '';
+
   }
 }
 

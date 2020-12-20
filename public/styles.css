@@ -7,8 +7,14 @@ tab-maker-measure {
   border-right: solid 1px;
   margin: .5rem;
   padding: 0 .5rem;
+  display: flex;
+  flex-direction: row;
 }
 
+#tab-root {
+  display: flex;
+  flex-direction: row;
+}
 #tab-script {
   display: block;
   width: 80%;
