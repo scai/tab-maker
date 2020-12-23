@@ -99,28 +99,92 @@ class TabMakerBlock extends HTMLElement {
     this.root = this.attachShadow({ mode: 'open' });
     this.root.innerHTML = `
       <style>
-        .block { height: 1.1em; }
-        .block-root { padding: 1px; }
+        .block { 
+          text-align: center;
+          line-height: 1.2rem;
+        }
+        .block-root {
+          margin: .1rem;
+        }
+        
+        .octave{
+          height: .3rem;
+          text-align:center;
+          background-repeat: no-repeat;
+          background-position: center center;
+          background-image: url(octave.svg)
+        }
+
+        .chord.hidden {
+          visibility: hidden;
+        }
+
+        .octave { 
+          visibility: hidden;
+        }
+        .octave-up-1 .up-1 {
+          visibility: visible;
+        }
+        .octave-up-2 .up-1,
+        .octave-up-2 .up-2 {
+          visibility: visible;
+        }
+        .octave-down-1 .down-1 {
+          visibility: visible;
+        }
+        .octave-down-2 .down-1,
+        .octave-down-2 .down-2 {
+          visibility: visible;
+        }
+
+        .lyrics {
+          line-height: 1.5rem;
+        }
       </style>
       <div class="block-root">
-        <div class="block tm-chord"></div>
-        <div class="block tm-pitch"></div>
-        <div class="block tm-lyrics"></div>
+        <div class="block chord"></div>
+        <div class="block pitch">
+          <div class="octave up-2"></div>
+          <div class="octave up-1"></div>
+          <div class="note"></div>
+          <div class="octave down-1"></div>
+          <div class="octave down-2"></div>
+        </div>
+        <div class="block lyrics"></div>
       </div>
       `;
   }
 
   connectedCallback() {
     const chord = this.getAttribute("chord");
-
-    this.root.querySelector(".tm-chord ").textContent = chord ? chord : '';
+    const chordDiv = this.root.querySelector(".chord ");
+    chordDiv.textContent = chord ? chord : 'X';
+    if (!chord) { 
+      chordDiv.classList.add('hidden');
+    }
 
     const pitch = this.getAttribute("pitch");
-    this.root.querySelector(".tm-pitch ").textContent = pitch ? pitch : '';
+    // Matches "<note>+/-<octave>": 3, 3+1, 3+2, 3-1, 3-2.
+    const pitchMatch = pitch.match(/(?<note>\d(?:b|#)?)(?<oct>(?:\+|\-)\d)?/);
+    const pitchDiv = this.root.querySelector(".pitch")
+    if (pitchMatch.groups['oct']) {
+      const octaveClassName = TabMakerBlock.OCTAVE_CLASS_NAME_MAP[pitchMatch.groups['oct']];
+      if (octaveClassName) {
+        pitchDiv.classList.add(octaveClassName);
+      }
+    }
+    this.root.querySelector(".note").textContent = pitchMatch.groups['note']
+
     const lyrics = this.getAttribute("lyrics");
+    this.root.querySelector(".lyrics ").textContent = lyrics ? lyrics : '';
 
-    this.root.querySelector(".tm-lyrics ").textContent = lyrics ? lyrics : '';
+  }
 
+  static OCTAVE_CLASS_NAME_MAP = {
+    '-2':'octave-down-2',
+    '-1':'octave-down-1',
+    '+1':'octave-up-1',
+    '+2':'octave-up-2',
   }
 }
 
