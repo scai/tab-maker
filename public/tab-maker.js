@@ -1,69 +1,84 @@
 function tabMakerMain() {
-  const tabScript = document.getElementById('tab-script');
-  tabScript.addEventListener('change', renderTab);
+  const renderer = new TabRenderer();
+  renderer.renderTab();
+}
 
-  // Triggers render when a block or measure ends.
-  tabScript.addEventListener('keydown', (event) => {
-    if (event.key == ',' || event.key == '|') {
-      renderTab();
+/**
+ * Renders tab script into HTML DOM.
+ */
+class TabRenderer {
+  constructor() {
+    this.tabScript = document.getElementById('tab-script');
+    this.tabScript.addEventListener('change', () => this.renderTab());
+
+    // Triggers render when a block or measure ends.
+    this.tabScript.addEventListener('keydown', (event) => {
+      if (event.key == ',' || event.key == '|') {
+        this.renderTab();
+      }
+    });
+    this.keySelect = document.getElementById('key-select');
+    this.keySelect.addEventListener('change', () => this.renderTab());
+  }
+
+  static BLOCK_PATTERN = /(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))\s*(?:(?<lyrics>.+))/;
+
+  renderBlock(b) {
+    if (!b || b.length == 0) {
+      return null;
     }
-  });
-  document.getElementById('key-select').addEventListener('change', renderTab);
-  renderTab();
-}
 
-function getMatchOrNull(match) {
-  return (match && match.length > 1) ? match[1] : null;
-}
-
-function renderBlock(tabRoot, b) {
-  if (!b || b.length == 0) {
-    return;
+    // Matches [chord] (pitch) lyrics
+    const match = b.match(TabRenderer.BLOCK_PATTERN);
+    if (!match) return null;
+    const chord = match.groups['chord'];
+    const pitch = match.groups['pitch'];
+    const lyrics = match.groups['lyrics'];
+    const newBlock = new TabMakerBlock();
+    if (chord) {
+      const key = this.keySelect.value;
+      newBlock.setAttribute('chord', ChordUtil.transpose(key, chord));
+    }
+    if (pitch) {
+      newBlock.setAttribute('pitch', pitch);
+    }
+    if (lyrics) {
+      newBlock.setAttribute('lyrics', lyrics);
+    }
+    return newBlock;
   }
 
-  // Matches [chord] (pitch) lyrics
-  const match = b.match(/(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))\s*(?:(?<lyrics>.+))/);
-  if (!match) return;
-  const chord = match.groups['chord'];
-  const pitch = match.groups['pitch'];
-  const lyrics = match.groups['lyrics'];
-  console.log(`Chord: ${chord}, Pitch: ${pitch}, Lyrics: ${lyrics}`);
-  const newBlock = new TabMakerBlock();
-  if (chord) {
-    const key = document.getElementById('key-select').value;
-    newBlock.setAttribute('chord', ChordUtil.transpose(key, chord));
+  renderMeasure(m) {
+    const blocks = m.split(',');
+    const measureDiv = document.createElement("tab-maker-measure");
+    blocks.map(b => b.trim())
+      .forEach(b => {
+        const block = this.renderBlock(b);
+        if (block) measureDiv.appendChild(block);
+      });
+    if (measureDiv.childElementCount == 0) return null;
+    return measureDiv;
   }
-  if (pitch) {
-    newBlock.setAttribute('pitch', pitch);
+
+  renderSection(s) {
+    const measures = s.split('|');
+    const sectionDiv = document.createElement("div");
+    measures.forEach(m => {
+      const measure = this.renderMeasure(m);
+      if (measure) sectionDiv.appendChild(measure);
+    });
+    return sectionDiv;
   }
-  if (lyrics) {
-    newBlock.setAttribute('lyrics', lyrics);
+
+  renderTab() {
+    const tabRoot = document.getElementById('tab-root');
+    tabRoot.innerHTML = '';
+    const sections = this.tabScript.value.trim().split('\n');
+    sections.forEach(s => {
+      const section = this.renderSection(s);
+      if (section) tabRoot.appendChild(section);
+    });
   }
-  tabRoot.appendChild(newBlock);
-}
-
-function renderMeasure(tabRoot, m) {
-  const blocks = m.split(',');
-  const measureDiv = document.createElement("tab-maker-measure");
-  blocks.map(b => b.trim())
-    .forEach(b => renderBlock(measureDiv, b));
-  if (measureDiv.childElementCount == 0) return;
-  tabRoot.appendChild(measureDiv);
-}
-
-function renderSection(tabRoot, s) {
-  const measures = s.split('|');
-  const sectionDiv = document.createElement("div");
-  measures.forEach(m => renderMeasure(sectionDiv, m));
-  tabRoot.appendChild(sectionDiv);
-}
-
-function renderTab() {
-  const script = document.getElementById('tab-script').value;
-  const tabRoot = document.getElementById('tab-root');
-  tabRoot.innerHTML = '';
-  const sections = script.trim().split('\n');
-  sections.forEach(s => renderSection(tabRoot, s));
 }
 
 /**
