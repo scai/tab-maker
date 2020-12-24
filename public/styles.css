@@ -1,3 +1,10 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-size: 25px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 tab-maker-block {
   display: inline-block;
   margin: .25rem;
@@ -7,17 +14,28 @@ tab-maker-measure {
   border-right: solid 1px;
   margin: .5rem;
   padding: 0 .5rem;
-  display: flex;
-  flex-direction: row;
+  display: inline-block;
 }
 
 #tab-root {
-  display: flex;
-  flex-direction: row;
+  background-color: antiquewhite;
 }
+
 #tab-script {
   display: block;
-  width: 80%;
-  height: 10rem;
-  
+  font-size: 1rem;
+  font-family: monospace;
+}
+
+.root {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.editor {
+  display: grid;
+  grid-template-rows: 1fr 9fr;
 }

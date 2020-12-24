@@ -159,7 +159,7 @@ class TabMakerBlock extends HTMLElement {
     const chord = this.getAttribute("chord");
     const chordDiv = this.root.querySelector(".chord ");
     chordDiv.textContent = chord ? chord : 'X';
-    if (!chord) { 
+    if (!chord) {
       chordDiv.classList.add('hidden');
     }
 
@@ -181,10 +181,10 @@ class TabMakerBlock extends HTMLElement {
   }
 
   static OCTAVE_CLASS_NAME_MAP = {
-    '-2':'octave-down-2',
-    '-1':'octave-down-1',
-    '+1':'octave-up-1',
-    '+2':'octave-up-2',
+    '-2': 'octave-down-2',
+    '-1': 'octave-down-1',
+    '+1': 'octave-up-1',
+    '+2': 'octave-up-2',
   }
 }
 
