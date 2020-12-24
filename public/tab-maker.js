@@ -51,12 +51,19 @@ function renderMeasure(tabRoot, m) {
   tabRoot.appendChild(measureDiv);
 }
 
+function renderSection(tabRoot, s) {
+  const measures = s.split('|');
+  const sectionDiv = document.createElement("div");
+  measures.forEach(m => renderMeasure(sectionDiv, m));
+  tabRoot.appendChild(sectionDiv);
+}
+
 function renderTab() {
   const script = document.getElementById('tab-script').value;
   const tabRoot = document.getElementById('tab-root');
   tabRoot.innerHTML = '';
-  const measures = script.trim().split('|');
-  measures.forEach(m => renderMeasure(tabRoot, m));
+  const sections = script.trim().split('\n');
+  sections.forEach(s => renderSection(tabRoot, s));
 }
 
 /**
