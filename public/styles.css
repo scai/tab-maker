@@ -46,5 +46,5 @@ tab-maker-measure {
 
 .editor {
   display: grid;
-  grid-template-rows: 1fr 9fr;
+  grid-template-rows: 2rem auto;
 }

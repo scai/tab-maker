@@ -1,6 +1,6 @@
 function tabMakerMain() {
   const renderer = new TabRenderer();
-  renderer.openTab('test').then(() => renderer.renderTab());
+  renderer.openTab('test');
 }
 
 /**
@@ -19,6 +19,9 @@ class TabRenderer {
     });
     this.keySelect = document.getElementById('key-select');
     this.keySelect.addEventListener('change', () => this.renderTab());
+
+    this.tabSelect = document.getElementById('tab-select');
+    this.tabSelect.addEventListener('change', () => this.openTab(this.tabSelect.value));
   }
 
   static BLOCK_PATTERN = /(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))\s*(?:(?<lyrics>.+))/;
@@ -71,11 +74,15 @@ class TabRenderer {
   }
 
   openTab(id) {
-    return $.get(`./tabs/${id}.json`)
-      .done((data) =>
-        this.tabScript.value = data.tabScript
-      )
-      .fail(() => console.error("failed to load " + id));
+    $.get(`./tabs/${id}.json`)
+      .done((data) => {
+        this.tabScript.value = data.tabScript;
+        this.renderTab();
+      })
+      .fail(() => {
+        this.tabScript.value = "failed to load " + id;
+        this.renderTab();
+      });
   }
 
   renderTab() {
