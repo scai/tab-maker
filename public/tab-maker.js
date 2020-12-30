@@ -1,6 +1,6 @@
 function tabMakerMain() {
   const renderer = new TabRenderer();
-  renderer.renderTab();
+  renderer.openTab('test').then(() => renderer.renderTab());
 }
 
 /**
@@ -68,6 +68,14 @@ class TabRenderer {
       if (measure) sectionDiv.appendChild(measure);
     });
     return sectionDiv;
+  }
+
+  openTab(id) {
+    return $.get(`./tabs/${id}.json`)
+      .done((data) =>
+        this.tabScript.value = data.tabScript
+      )
+      .fail(() => console.error("failed to load " + id));
   }
 
   renderTab() {
