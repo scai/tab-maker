@@ -98,7 +98,7 @@ class TabRenderer {
 
 /**
  * Transposes chord degrees into a given key.
- * Examples: IV-6, iii-9, ii-7b5
+ * Examples: IV-6, iii-9, ii-7b5, I-Maj9/V
  */
 class ChordUtil {
   static TRANSPOSE_MAP = {
@@ -107,25 +107,32 @@ class ChordUtil {
   }
   static MAJOR_CHORDS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
   static MINOR_CHORDS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii'];
-  static transpose(key, script) {
-    if (script.length == 0) return '';
-    let result = '';
-    const parts = script.split('-');
-    const chord = parts.length > 0 ? parts[0] : script;
-    const extension = parts.length > 1 ? parts[1] : '';
-    const majorIndex = ChordUtil.MAJOR_CHORDS.indexOf(chord);
+
+  static degreeToName(key, degree) {
+    const majorIndex = ChordUtil.MAJOR_CHORDS.indexOf(degree);
     if (majorIndex >= 0) {
-      result = ChordUtil.TRANSPOSE_MAP[key][majorIndex];
+      return ChordUtil.TRANSPOSE_MAP[key][majorIndex];
     } else {
-      const minorIndex = ChordUtil.MINOR_CHORDS.indexOf(chord);
+      const minorIndex = ChordUtil.MINOR_CHORDS.indexOf(degree);
       if (minorIndex >= 0) {
-        result = ChordUtil.TRANSPOSE_MAP[key][minorIndex] + 'm';
+        return ChordUtil.TRANSPOSE_MAP[key][minorIndex] + 'm';
       } else {
         console.log(`Unknown chord ${script}`);
+        return 'ERR';
       }
     }
-    if (extension.length > 0) {
-      return result + extension;
+  }
+
+  // Transposes chord notation "script" to given "key".
+  static transpose(key, script) {
+    if (script.length == 0) return '';
+    const match = script.match(/(?<degree>\w+)(\-(?<quality>\w+))?(\/(?<root>\w+))?/);
+    let result = ChordUtil.degreeToName(key, match.groups['degree']);
+    if (match.groups['quality']) {
+      result += match.groups['quality'];
+    }
+    if (match.groups['root']) {
+      result += '/' + ChordUtil.degreeToName(key, match.groups['root']);
     }
     return result;
   }
