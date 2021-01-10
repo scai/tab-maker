@@ -24,7 +24,7 @@ class TabRenderer {
     this.tabSelect.addEventListener('change', () => this.openTab(this.tabSelect.value));
   }
 
-  static BLOCK_PATTERN = /(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))\s*(?:(?<lyrics>.+))/;
+  static BLOCK_PATTERN = /(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))?\s*(?:(?<lyrics>.+))/;
 
   renderBlock(b) {
     if (!b || b.length == 0) {
@@ -48,6 +48,7 @@ class TabRenderer {
     if (lyrics) {
       newBlock.setAttribute('lyrics', lyrics);
     }
+    console.log(newBlock);
     return newBlock;
   }
 
@@ -202,23 +203,27 @@ class TabMakerBlock extends HTMLElement {
 
   connectedCallback() {
     const chord = this.getAttribute("chord");
-    const chordDiv = this.root.querySelector(".chord ");
+    const chordDiv = this.root.querySelector(".chord");
     chordDiv.textContent = chord ? chord : 'X';
     if (!chord) {
       chordDiv.classList.add('hidden');
     }
 
     const pitch = this.getAttribute("pitch");
-    // Matches "<note>+/-<octave>": 3, 3+1, 3+2, 3-1, 3-2.
-    const pitchMatch = pitch.match(/(?<note>\d(?:b|#)?)(?<oct>(?:\+|\-)\d)?/);
-    const pitchDiv = this.root.querySelector(".pitch")
-    if (pitchMatch.groups['oct']) {
-      const octaveClassName = TabMakerBlock.OCTAVE_CLASS_NAME_MAP[pitchMatch.groups['oct']];
-      if (octaveClassName) {
-        pitchDiv.classList.add(octaveClassName);
+    if (!pitch) {
+      this.root.querySelector(".pitch").classList.add('hidden');
+    } else {
+      // Matches "<note>+/-<octave>": 3, 3+1, 3+2, 3-1, 3-2.
+      const pitchMatch = pitch.match(/(?<note>\d(?:b|#)?)(?<oct>(?:\+|\-)\d)?/);
+      const pitchDiv = this.root.querySelector(".pitch")
+      if (pitchMatch.groups['oct']) {
+        const octaveClassName = TabMakerBlock.OCTAVE_CLASS_NAME_MAP[pitchMatch.groups['oct']];
+        if (octaveClassName) {
+          pitchDiv.classList.add(octaveClassName);
+        }
       }
+      this.root.querySelector(".note").textContent = pitchMatch.groups['note']
     }
-    this.root.querySelector(".note").textContent = pitchMatch.groups['note']
 
     const lyrics = this.getAttribute("lyrics");
     this.root.querySelector(".lyrics ").textContent = lyrics ? lyrics : '';
