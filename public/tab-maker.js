@@ -48,7 +48,6 @@ class TabRenderer {
     if (lyrics) {
       newBlock.setAttribute('lyrics', lyrics);
     }
-    console.log(newBlock);
     return newBlock;
   }
 
