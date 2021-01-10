@@ -19,18 +19,22 @@ tab-maker-measure {
 
 #tab-root {
   background-color: antiquewhite;
+  overflow-y: scroll;
 }
 
 #tab-script {
   display: block;
   font-size: 1rem;
   font-family: monospace;
+  resize: none;
 }
 
 .root {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
   display: grid;
 }
 @media (orientation: landscape) {
