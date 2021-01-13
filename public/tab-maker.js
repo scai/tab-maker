@@ -104,6 +104,7 @@ class ChordUtil {
   static TRANSPOSE_MAP = {
     'C': ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
     'G': ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
+    'A': ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
     'B': ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'],
   }
   static MAJOR_CHORDS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
