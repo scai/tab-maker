@@ -1,22 +1,32 @@
-body {
+html {
   padding: 0;
   margin: 0;
+  color: #333;
   font-size: 25px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+h1 {
+  font-size: 1.5rem;
+  padding: 0;
+  margin: 0;
+  font-weight: bold;
+}
+
 tab-maker-block {
   display: inline-block;
-  margin: .25rem;
 }
 
 tab-maker-measure {
   border-right: solid 1px;
-  margin: .5rem;
+  margin: .5rem .1rem;
   padding: 0 .5rem;
   display: inline-block;
 }
 
+.tab-info {
+  margin: .5rem;
+}
 #tab-root {
   background-color: antiquewhite;
   overflow-y: scroll;
@@ -24,9 +34,14 @@ tab-maker-measure {
 
 #tab-script {
   display: block;
-  font-size: 1.5rem;
   font-family: monospace;
   resize: none;
+  line-height: 1.5em;
+}
+
+select, textarea {
+  color: #666;
+  font-size: 1rem;
 }
 
 .root {

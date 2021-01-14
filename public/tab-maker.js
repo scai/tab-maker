@@ -76,6 +76,7 @@ class TabRenderer {
   openTab(id) {
     $.get(`./tabs/${id}.json`)
       .done((data) => {
+        this.tabData = data;
         this.tabScript.value = data.tabScript;
         this.renderTab();
       })
@@ -86,8 +87,12 @@ class TabRenderer {
   }
 
   renderTab() {
-    const tabRoot = document.getElementById('tab-root');
+    const tabRoot = document.getElementById('tab-body');
     tabRoot.innerHTML = '';
+    // Tab metadata
+    document.getElementById('tab-title').textContent = this.tabData.title;
+    document.getElementById('original-key').textContent = this.tabData.originalKey;
+    // Tab body
     const sections = this.tabScript.value.trim().split('\n');
     sections.forEach(s => {
       const section = this.renderSection(s);
@@ -139,6 +144,7 @@ class ChordUtil {
     return result;
   }
 }
+
 class TabMakerBlock extends HTMLElement {
   constructor() {
     super();
@@ -154,7 +160,7 @@ class TabMakerBlock extends HTMLElement {
         }
         
         .octave{
-          height: .3rem;
+          height: 5px;
           text-align:center;
           background-repeat: no-repeat;
           background-position: center center;
