@@ -22,6 +22,11 @@ class TabRenderer {
 
     this.tabSelect = document.getElementById('tab-select');
     this.tabSelect.addEventListener('change', () => this.openTab(this.tabSelect.value));
+
+    document.getElementById('dump-tab-data').addEventListener('click', () => {
+      this.tabData.tabScript = this.tabScript.value;
+      console.log(JSON.stringify(this.tabData));
+    });
   }
 
   static BLOCK_PATTERN = /(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))?\s*(?:(?<lyrics>.+))/;
