@@ -1,6 +1,6 @@
 function tabMakerMain() {
   const renderer = new TabRenderer();
-  renderer.openTab('test');
+  renderer.openLocalStorageTab() || renderer.openTab('test');
 }
 
 /**
@@ -89,6 +89,22 @@ class TabRenderer {
         this.tabScript.value = "failed to load " + id;
         this.renderTab();
       });
+  }
+
+  openLocalStorageTab() {
+    const KEY = 'tab data';
+    const loadTab = localStorage.getItem(KEY);
+    if (!loadTab || loadTab.length == 0) return false;
+    try {
+      this.tabData = JSON.parse(loadTab);
+      // TODO: verify tab data integrity.
+      this.tabScript.value = this.tabData.tabScript;
+      this.renderTab();
+      return true;
+    } catch (error) {
+      localStorage.removeItem(KEY);
+      return false;
+    }
   }
 
   renderTab() {
