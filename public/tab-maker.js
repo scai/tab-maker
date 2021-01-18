@@ -100,6 +100,7 @@ class TabRenderer {
     if (!loadTab || loadTab.length == 0) return false;
     try {
       this.tabData = JSON.parse(loadTab);
+      this.tabData.title += ' (from Local Storage)'
       // TODO: verify tab data integrity.
       this.tabScript.value = this.tabData.tabScript;
       this.renderTab();
