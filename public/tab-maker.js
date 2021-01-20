@@ -1,15 +1,20 @@
 function tabMakerMain() {
   const renderer = new TabRenderer();
-  renderer.openTab('test');
+  renderer.openLocalStorageTab() || renderer.openTab('test');
 }
 
 /**
  * Renders tab script into HTML DOM.
  */
 class TabRenderer {
+  static LOCAL_STORAGE_KEY = 'tab data';
   constructor() {
     this.tabScript = document.getElementById('tab-script');
-    this.tabScript.addEventListener('change', () => this.renderTab());
+    this.tabScript.addEventListener('change', () => {
+      this.renderTab();
+      this.tabData.tabScript = this.tabScript.value;
+      localStorage.setItem(TabRenderer.LOCAL_STORAGE_KEY, JSON.stringify(this.tabData));
+    });
 
     // Triggers render when a block or measure ends.
     this.tabScript.addEventListener('keydown', (event) => {
@@ -24,7 +29,6 @@ class TabRenderer {
     this.tabSelect.addEventListener('change', () => this.openTab(this.tabSelect.value));
 
     document.getElementById('dump-tab-data').addEventListener('click', () => {
-      this.tabData.tabScript = this.tabScript.value;
       console.log(JSON.stringify(this.tabData));
     });
   }
@@ -89,6 +93,22 @@ class TabRenderer {
         this.tabScript.value = "failed to load " + id;
         this.renderTab();
       });
+  }
+
+  openLocalStorageTab() {
+    const loadTab = localStorage.getItem(TabRenderer.LOCAL_STORAGE_KEY);
+    if (!loadTab || loadTab.length == 0) return false;
+    try {
+      this.tabData = JSON.parse(loadTab);
+      this.tabData.title += ' (from Local Storage)'
+      // TODO: verify tab data integrity.
+      this.tabScript.value = this.tabData.tabScript;
+      this.renderTab();
+      return true;
+    } catch (error) {
+      localStorage.removeItem(TabRenderer.LOCAL_STORAGE_KEY);
+      return false;
+    }
   }
 
   renderTab() {
