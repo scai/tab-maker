@@ -31,6 +31,14 @@ class TabRenderer {
     document.getElementById('dump-tab-data').addEventListener('click', () => {
       console.log(JSON.stringify(this.tabData));
     });
+
+    document.getElementById('toggle-script').addEventListener('click', () => {
+      if (this.tabScript.classList.contains('hidden')) {
+        this.tabScript.classList.remove('hidden');
+      } else {
+        this.tabScript.classList.add('hidden');
+      }
+    });
   }
 
   static BLOCK_PATTERN = /(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))?\s*(?:(?<lyrics>.+))/;

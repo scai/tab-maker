@@ -40,6 +40,10 @@ tab-maker-measure {
   line-height: 1.5em;
 }
 
+#tab-script.hidden {
+  display: none;
+}
+
 input, select, textarea {
   border: silver solid 1px;
   border-radius: 0;
