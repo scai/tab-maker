@@ -1,6 +1,13 @@
 function tabMakerMain() {
   const renderer = new TabRenderer();
-  renderer.openLocalStorageTab() || renderer.openTab('test');
+  // Check for deep-link first.
+  const url = new URL(location);
+  const deepLinkTab = url.searchParams.get('tab');
+  if (deepLinkTab) {
+    renderer.openTab(deepLinkTab);
+  } else {
+    renderer.openLocalStorageTab() || renderer.openTab('test');
+  }
 }
 
 /**
