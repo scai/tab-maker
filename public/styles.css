@@ -3,7 +3,8 @@ html {
   margin: 0;
   color: #333;
   font-size: 25px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --main-font: 'Segoe UI', Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: var(--main-font);
 }
 
 h1 {
@@ -43,6 +44,12 @@ tab-maker-measure {
 
 #tab-script.hidden {
   display: none;
+}
+
+button, input, select {
+  font-family: var(--main-font);
+  font-size: 1rem;
+  color: #333;
 }
 
 input, select, textarea {
