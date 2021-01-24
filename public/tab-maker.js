@@ -285,3 +285,29 @@ class TabMakerBlock extends HTMLElement {
 }
 
 customElements.define('tab-maker-block', TabMakerBlock);
+
+/////////////////////////////////////////////////////////////////////
+
+/**
+ * Web component for tab diagram.
+ * For example: <tab-maker-chord-diagram>"CMaj9"[x:3:2:4:3:x]</tab-maker-chord-diagram">
+ */
+class TabMakerChordDiagram extends HTMLElement {
+  constructor() {
+    super();
+    this.root = this.attachShadow({ mode: 'open' });
+    this.root.innerHTML = `
+      <style>
+      </style>
+      <div>Chord Diagram</div>
+      `;
+  }
+  
+  connectedCallback() {
+    const script = this.textContent.trim();
+    const match = script.match(/\".+\"\[(?<sixth>[x|\d])\:(?<fifth>[x|\d])\:(?<fourth>[x|\d])\:(?<third>[x|\d])\:(?<second>[x|\d])\:(?<first>[x|\d])\]/);
+    console.log(match.groups);
+  }
+}
+
+customElements.define('tab-maker-chord-diagram', TabMakerChordDiagram);
