@@ -147,10 +147,13 @@ class TabRenderer {
  */
 class ChordUtil {
   static TRANSPOSE_MAP = {
-    'C': ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
-    'G': ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
     'A': ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
     'B': ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'],
+    'C': ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
+    'D': ['D', 'E', 'F#', 'G', 'A', 'B', 'C#'],
+    'E': ['E', 'F#', 'G#', 'A', 'B', '#C', '#D'],
+    'F': ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'],
+    'G': ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
   }
   static MAJOR_CHORDS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
   static MINOR_CHORDS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii'];
