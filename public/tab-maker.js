@@ -299,14 +299,18 @@ class TabMakerChordDiagram extends HTMLElement {
     this.root.innerHTML = `
       <style>
       </style>
-      <div>Chord Diagram</div>
+      <div id="caption"></div>
       `;
   }
-  
+
   connectedCallback() {
-    const script = this.textContent.trim();
-    const match = script.match(/\".+\"\[(?<sixth>[x|\d])\:(?<fifth>[x|\d])\:(?<fourth>[x|\d])\:(?<third>[x|\d])\:(?<second>[x|\d])\:(?<first>[x|\d])\]/);
-    console.log(match.groups);
+    const data = this.getAttribute('data').trim();
+    const match = data.match(/(?<caption>.+)\[(?<sixth>[x|\d])\:(?<fifth>[x|\d])\:(?<fourth>[x|\d])\:(?<third>[x|\d])\:(?<second>[x|\d])\:(?<first>[x|\d])\]/);
+    if (!match) {
+      this.root.getElementById('caption').textContent = "ERROR";
+      return;
+    }
+    this.root.getElementById('caption').textContent = match.groups['caption'];
   }
 }
 
