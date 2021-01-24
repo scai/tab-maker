@@ -14,6 +14,10 @@ h1 {
   font-weight: bold;
 }
 
+label {
+  user-select: none;
+}
+
 tab-maker-block {
   display: inline-block;
 }
@@ -29,6 +33,19 @@ tab-maker-measure {
 .tab-info {
   margin: .5rem;
 }
+
+.tab-info ul {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+}
+
+.tab-info ul li {
+  margin-right: 1rem;
+}
+
 #tab-root {
   background-color: antiquewhite;
   overflow-y: scroll;

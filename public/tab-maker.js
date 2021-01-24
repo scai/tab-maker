@@ -46,6 +46,17 @@ class TabRenderer {
         this.tabScript.classList.add('hidden');
       }
     });
+
+    document.getElementById('toggle-pitch').addEventListener('change', (e) => {
+      const body = document.querySelector('body');
+      const showPitch = e.target.checked;
+      console.log(showPitch)
+      if (showPitch) {
+        body.classList.add('show-pitch');
+      } else {
+        body.classList.remove('show-pitch');
+      }
+    });
   }
 
   static BLOCK_PATTERN = /(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))?\s*(?:(?<lyrics>.+))/;
@@ -200,6 +211,13 @@ class TabMakerBlock extends HTMLElement {
         }
         .block-root {
           margin: .1rem;
+        }
+
+        .block.pitch {
+          display: none;
+        }
+        :host-context(body.show-pitch) .block.pitch {
+          display: block;
         }
         
         .octave{
