@@ -143,6 +143,25 @@ class TabRenderer {
     // Tab metadata
     document.getElementById('tab-title').textContent = this.tabData.title;
     document.getElementById('original-key').textContent = this.tabData.originalKey;
+
+    // Chord diagrams
+    const chordDiagramsRoot = document.getElementById('chord-diagrams');
+    while(chordDiagramsRoot.firstChild) {
+      chordDiagramsRoot.removeChild(chordDiagramsRoot.firstChild);
+    }
+    if (this.tabData.chordDiagrams) {
+      const key = this.keySelect.value;
+      const chordSet = this.tabData.chordDiagrams.find(c => c.key == key);
+      if (chordSet) {
+        chordSet.chords.forEach(chord => {
+          const el = new TabMakerChordDiagram();
+          el.setAttribute('chord-id', chord.id);
+          el.setAttribute('data', chord.data);
+          chordDiagramsRoot.appendChild(el);
+        });
+      }
+    }
+
     // Tab body
     const sections = this.tabScript.value.trim().split('\n');
     sections.forEach(s => {

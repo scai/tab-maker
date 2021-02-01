@@ -1,5 +1,16 @@
 {
-  "title" : "测试歌曲",
-  "originalKey" : "C",
-  "tabScript" : "[I](1)今天,(2+1)愛,(3+2)永,[iii-9]|[V-7](3)為,(6-1)down,(5-2)bass|\n[iii-7b5/V](1)transposed chord,"
+  "title": "测试歌曲",
+  "originalKey": "C",
+  "chordDiagrams": [
+    {
+      "key": "C",
+      "chords": [
+        {
+          "id": "CMaj9",
+          "data": "\"CMaj9\"[x:3:2:4:3:x]"
+        }
+      ]
+    }
+  ],
+  "tabScript": "[I](1)今天,(2+1)愛,(3+2)永,[iii-9]|[V-7](3)為,(6-1)down,(5-2)bass|\n[iii-7b5/V](1)transposed chord,"
 }
