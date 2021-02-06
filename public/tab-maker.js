@@ -311,9 +311,13 @@ class TabMakerBlock extends HTMLElement {
       this.root.querySelector(".note").textContent = pitchMatch.groups['note']
     }
 
+    const lyricsRoot = this.root.querySelector(".lyrics");
     const lyrics = this.getAttribute("lyrics");
-    this.root.querySelector(".lyrics ").textContent = lyrics ? lyrics : '';
-
+    lyrics.split('/').forEach(line => {
+      const lineDiv = document.createElement('div');
+      lineDiv.textContent = line;
+      lyricsRoot.appendChild(lineDiv);
+    });
   }
 
   static OCTAVE_CLASS_NAME_MAP = {

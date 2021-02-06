@@ -26,8 +26,10 @@ tab-maker-measure {
   border-right: solid 1px;
   margin: .5rem .1rem;
   padding: 0 .5rem;
-  display: inline-block;
+  display: inline-flex;
   min-width: 4rem;
+  flex-direction: row;
+  align-items:flex-start;
 }
 
 .tab-info {
