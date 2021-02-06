@@ -340,6 +340,7 @@ class TabMakerChordDiagram extends HTMLElement {
       <style>
       </style>
       <div id="caption"></div>
+      <div id="diagram"></div>
       `;
   }
 
@@ -351,6 +352,9 @@ class TabMakerChordDiagram extends HTMLElement {
       return;
     }
     this.root.getElementById('caption').textContent = match.groups['caption'];
+
+    let draw = SVG().addTo('#diagram').size(300, 300)
+    let rect = draw.rect(100, 100).attr({ fill: '#f06' });
   }
 }
 
