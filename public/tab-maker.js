@@ -30,7 +30,14 @@ class TabRenderer {
       }
     });
     this.keySelect = document.getElementById('key-select');
+    ChordUtil.TRANSPOSE_MAP.forEach((value, key) => {
+      const option = document.createElement('option');
+      option.setAttribute('value', key);
+      option.textContent = key;
+      this.keySelect.appendChild(option);
+    });
     this.keySelect.addEventListener('change', () => this.renderTab());
+
 
     this.tabSelect = document.getElementById('tab-select');
     this.tabSelect.addEventListener('change', () => this.openTab(this.tabSelect.value));
@@ -176,26 +183,26 @@ class TabRenderer {
  * Examples: IV-6, iii-9, ii-7b5, I-Maj9/V
  */
 class ChordUtil {
-  static TRANSPOSE_MAP = {
-    'A': ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
-    'B': ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'],
-    'C': ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
-    'D': ['D', 'E', 'F#', 'G', 'A', 'B', 'C#'],
-    'E': ['E', 'F#', 'G#', 'A', 'B', '#C', '#D'],
-    'F': ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'],
-    'G': ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
-  }
+  static TRANSPOSE_MAP = new Map([
+      ['A', ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#']],
+      ['B', ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#']],
+      ['C', ['C', 'D', 'E', 'F', 'G', 'A', 'B']],
+      ['D', ['D', 'E', 'F#', 'G', 'A', 'B', 'C#']],
+      ['E', ['E', 'F#', 'G#', 'A', 'B', '#C', '#D']],
+      ['F', ['F', 'G', 'A', 'Bb', 'C', 'D', 'E']],
+      ['G', ['G', 'A', 'B', 'C', 'D', 'E', 'F#']],
+  ]);
   static MAJOR_CHORDS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
   static MINOR_CHORDS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii'];
 
   static degreeToName(key, degree) {
     const majorIndex = ChordUtil.MAJOR_CHORDS.indexOf(degree);
     if (majorIndex >= 0) {
-      return ChordUtil.TRANSPOSE_MAP[key][majorIndex];
+      return ChordUtil.TRANSPOSE_MAP.get(key)[majorIndex];
     } else {
       const minorIndex = ChordUtil.MINOR_CHORDS.indexOf(degree);
       if (minorIndex >= 0) {
-        return ChordUtil.TRANSPOSE_MAP[key][minorIndex] + 'm';
+        return ChordUtil.TRANSPOSE_MAP.get(key)[minorIndex] + 'm';
       } else {
         console.log(`Unknown chord ${script}`);
         return 'ERR';
