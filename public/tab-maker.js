@@ -206,8 +206,11 @@ class ChordUtil {
   // Transposes chord notation "script" to given "key".
   static transpose(key, script) {
     if (script.length == 0) return '';
-    const match = script.match(/(?<degree>\w+)(\-(?<quality>\w+))?(\/(?<root>\w+))?/);
+    const match = script.match(/(?<degree>[i|I|v|V]+)(?<flatsharp>b|#)?(\-(?<quality>\w+))?(\/(?<root>\w+))?/);
     let result = ChordUtil.degreeToName(key, match.groups['degree']);
+    if (match.groups['flatsharp']) {
+      result += match.groups['flatsharp'];
+    }
     if (match.groups['quality']) {
       result += match.groups['quality'];
     }
