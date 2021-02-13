@@ -33,7 +33,7 @@ class TabRenderer {
     ChordUtil.TRANSPOSE_MAP.forEach((value, key) => {
       const option = document.createElement('option');
       option.setAttribute('value', key);
-      option.textContent = key;
+      option.textContent = ChordUtil.replaceFlatSharp(key);
       this.keySelect.appendChild(option);
     });
     this.isKeySelected = false;
@@ -152,7 +152,7 @@ class TabRenderer {
     tabRoot.innerHTML = '';
     // Tab metadata
     document.getElementById('tab-title').textContent = this.tabData.title;
-    document.getElementById('original-key').textContent = this.tabData.originalKey;
+    document.getElementById('original-key').textContent = ChordUtil.replaceFlatSharp(this.tabData.originalKey);
     if (!this.isKeySelected) {
       this.keySelect.value = this.tabData.originalKey;
     }
