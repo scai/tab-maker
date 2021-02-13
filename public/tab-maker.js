@@ -150,6 +150,7 @@ class TabRenderer {
     // Tab metadata
     document.getElementById('tab-title').textContent = this.tabData.title;
     document.getElementById('original-key').textContent = this.tabData.originalKey;
+    this.keySelect.value = this.tabData.originalKey;
 
     // Chord diagrams
     const chordDiagramsRoot = document.getElementById('chord-diagrams');
@@ -188,7 +189,8 @@ class ChordUtil {
       ['B', ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#']],
       ['C', ['C', 'D', 'E', 'F', 'G', 'A', 'B']],
       ['D', ['D', 'E', 'F#', 'G', 'A', 'B', 'C#']],
-      ['E', ['E', 'F#', 'G#', 'A', 'B', '#C', '#D']],
+      ['E', ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#']],
+      ['Eb', ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D']],
       ['F', ['F', 'G', 'A', 'Bb', 'C', 'D', 'E']],
       ['G', ['G', 'A', 'B', 'C', 'D', 'E', 'F#']],
   ]);
