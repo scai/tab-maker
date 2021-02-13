@@ -212,6 +212,10 @@ class ChordUtil {
     }
   }
 
+  static replaceFlatSharp(value) {
+    return value.replace('#','♯').replace('b', '♭');
+  }
+
   // Transposes chord notation "script" to given "key".
   static transpose(key, script) {
     if (script.length == 0) return '';
@@ -224,9 +228,9 @@ class ChordUtil {
       result += match.groups['quality'];
     }
     if (match.groups['root']) {
-      result += '/' + ChordUtil.degreeToName(key, match.groups['root']);
+      result += '/' + key, match.groups['root'];
     }
-    return result;
+    return ChordUtil.replaceFlatSharp(result);
   }
 }
 
