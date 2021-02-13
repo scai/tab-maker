@@ -36,8 +36,11 @@ class TabRenderer {
       option.textContent = key;
       this.keySelect.appendChild(option);
     });
-    this.keySelect.addEventListener('change', () => this.renderTab());
-
+    this.isKeySelected = false;
+    this.keySelect.addEventListener('change', () => {
+      this.isKeySelected = true;
+      this.renderTab();
+    });
 
     this.tabSelect = document.getElementById('tab-select');
     this.tabSelect.addEventListener('change', () => this.openTab(this.tabSelect.value));
@@ -150,11 +153,13 @@ class TabRenderer {
     // Tab metadata
     document.getElementById('tab-title').textContent = this.tabData.title;
     document.getElementById('original-key').textContent = this.tabData.originalKey;
-    this.keySelect.value = this.tabData.originalKey;
+    if (!this.isKeySelected) {
+      this.keySelect.value = this.tabData.originalKey;
+    }
 
     // Chord diagrams
     const chordDiagramsRoot = document.getElementById('chord-diagrams');
-    while(chordDiagramsRoot.firstChild) {
+    while (chordDiagramsRoot.firstChild) {
       chordDiagramsRoot.removeChild(chordDiagramsRoot.firstChild);
     }
     if (this.tabData.chordDiagrams) {
@@ -185,14 +190,14 @@ class TabRenderer {
  */
 class ChordUtil {
   static TRANSPOSE_MAP = new Map([
-      ['A', ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#']],
-      ['B', ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#']],
-      ['C', ['C', 'D', 'E', 'F', 'G', 'A', 'B']],
-      ['D', ['D', 'E', 'F#', 'G', 'A', 'B', 'C#']],
-      ['E', ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#']],
-      ['Eb', ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D']],
-      ['F', ['F', 'G', 'A', 'Bb', 'C', 'D', 'E']],
-      ['G', ['G', 'A', 'B', 'C', 'D', 'E', 'F#']],
+    ['A', ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#']],
+    ['B', ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#']],
+    ['C', ['C', 'D', 'E', 'F', 'G', 'A', 'B']],
+    ['D', ['D', 'E', 'F#', 'G', 'A', 'B', 'C#']],
+    ['E', ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#']],
+    ['Eb', ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D']],
+    ['F', ['F', 'G', 'A', 'Bb', 'C', 'D', 'E']],
+    ['G', ['G', 'A', 'B', 'C', 'D', 'E', 'F#']],
   ]);
   static MAJOR_CHORDS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
   static MINOR_CHORDS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii'];
@@ -213,7 +218,7 @@ class ChordUtil {
   }
 
   static replaceFlatSharp(value) {
-    return value.replace('#','♯').replace('b', '♭');
+    return value.replace('#', '♯').replace('b', '♭');
   }
 
   // Transposes chord notation "script" to given "key".
