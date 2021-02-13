@@ -110,7 +110,7 @@ class TabRenderer {
 
   renderSection(s) {
     const measures = s.split('|');
-    const sectionDiv = document.createElement("div");
+    const sectionDiv = document.createElement("section");
     measures.forEach(m => {
       const measure = this.renderMeasure(m);
       if (measure) sectionDiv.appendChild(measure);
