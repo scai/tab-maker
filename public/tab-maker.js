@@ -292,6 +292,7 @@ class TabMakerBlock extends HTMLElement {
 
         .lyrics {
           line-height: 1.5rem;
+          font-weight: 300;
         }
       </style>
       <div class="block-root">
