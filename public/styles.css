@@ -3,7 +3,7 @@ html {
   margin: 0;
   color: #333;
   font-size: 25px;
-  --main-font: 'Segoe UI', Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --main-font: 'Noto Sans SC', sans-serif;
   font-family: var(--main-font);
 }
 
@@ -18,16 +18,31 @@ label {
   user-select: none;
 }
 
+#tab-body section {
+  margin: 1rem 0;
+}
+
 tab-maker-block {
   display: inline-block;
+  margin: 0 0.1rem;
 }
 
 tab-maker-measure {
-  border-right: solid 1px;
-  margin: .5rem .1rem;
+  border-right: solid 2px #999;
+  margin: .5rem 0;
   padding: 0 .5rem;
-  display: inline-block;
+  display: inline-flex;
   min-width: 4rem;
+  flex-direction: row;
+  align-items:flex-start;
+  transition: background 1s;
+  user-select: none;
+}
+tab-maker-measure:first-of-type {
+  border-left: solid 2px #999;
+}
+tab-maker-measure:hover {
+  background-color: rgba(255,255,255,0.5);
 }
 
 .tab-info {
@@ -49,6 +64,7 @@ tab-maker-measure {
 #tab-root {
   background-color: antiquewhite;
   overflow-y: scroll;
+  padding: .25rem .5rem;
 }
 
 #tab-script {
