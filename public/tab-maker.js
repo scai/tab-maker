@@ -191,12 +191,15 @@ class TabRenderer {
 class ChordUtil {
   static TRANSPOSE_MAP = new Map([
     ['A', ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#']],
+    ['Bb', ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A']],
     ['B', ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#']],
     ['C', ['C', 'D', 'E', 'F', 'G', 'A', 'B']],
+    ['Db', ['Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C']],
     ['D', ['D', 'E', 'F#', 'G', 'A', 'B', 'C#']],
-    ['E', ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#']],
     ['Eb', ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D']],
+    ['E', ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#']],
     ['F', ['F', 'G', 'A', 'Bb', 'C', 'D', 'E']],
+    ['F#', ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'E#']],
     ['G', ['G', 'A', 'B', 'C', 'D', 'E', 'F#']],
   ]);
   static MAJOR_CHORDS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
