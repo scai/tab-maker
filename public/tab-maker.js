@@ -386,11 +386,11 @@ class TabMakerChordDiagram extends HTMLElement {
     const STRING_SPACING = 15;
     const FRET_SPACING = 20;
     const STRING_COUNT = 6;
-    const FRET_COUNT = 6;
+    const FRET_COUNT = 5;
     const diagramWidth = DIAGRAM_PADDING_LEFT * 2 + STRING_SPACING * (STRING_COUNT - 1);
     const diagramHeight = DIAGRAM_PADDING_TOP * 2 + FRET_SPACING * (FRET_COUNT - 1);
     var draw = SVG().addTo(diagramRoot).size(diagramWidth, diagramHeight);
-    for (let fret = 0; fret < STRING_COUNT; fret++) {
+    for (let fret = 0; fret < FRET_COUNT; fret++) {
       const fretY = DIAGRAM_PADDING_TOP + fret * FRET_SPACING;
       const fretEndX = DIAGRAM_PADDING_LEFT + STRING_SPACING * (STRING_COUNT - 1);
       draw.line(DIAGRAM_PADDING_LEFT, fretY, fretEndX, fretY).stroke({
@@ -398,7 +398,7 @@ class TabMakerChordDiagram extends HTMLElement {
         color: 'silver'
       });
     }
-    for (let string = 0; string < FRET_COUNT; string++) {
+    for (let string = 0; string < STRING_COUNT; string++) {
       const stringX = DIAGRAM_PADDING_LEFT + string * STRING_SPACING;
       const stringEndY = DIAGRAM_PADDING_TOP + FRET_SPACING * (FRET_COUNT - 1);
       draw.line(stringX, DIAGRAM_PADDING_TOP, stringX, stringEndY).stroke({
