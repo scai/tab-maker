@@ -368,7 +368,6 @@ class TabMakerChordDiagram extends HTMLElement {
     this.root.innerHTML = `
       <style>
       </style>
-      <div id="caption"></div>
       <div id="diagram"></div>
       `;
   }
@@ -377,13 +376,33 @@ class TabMakerChordDiagram extends HTMLElement {
     const data = this.getAttribute('data').trim();
     const match = data.match(/(?<caption>.+)\[(?<sixth>[x|\d])\:(?<fifth>[x|\d])\:(?<fourth>[x|\d])\:(?<third>[x|\d])\:(?<second>[x|\d])\:(?<first>[x|\d])\]/);
     if (!match) {
-      this.root.getElementById('caption').textContent = "ERROR";
+      this.root.getElementById('diagram').textContent = "ERROR";
       return;
     }
-    this.root.getElementById('caption').textContent = match.groups['caption'];
-
-    let draw = SVG().addTo('#diagram').size(300, 300)
-    let rect = draw.rect(100, 100).attr({ fill: '#f06' });
+    const caption = match.groups['caption'];
+    const diagramRoot = this.root.getElementById('diagram');
+    const DIAGRAM_PADDING_LEFT = 20;
+    const DIAGRAM_PADDING_TOP = 40;
+    const STRING_SPACING = 15;
+    const FRET_SPACING = 20;
+    const STRING_COUNT = 6;
+    const FRET_COUNT = 6;
+    const diagramWidth = DIAGRAM_PADDING_LEFT * 2 + STRING_SPACING * (STRING_COUNT - 1);
+    const diagramHeight = DIAGRAM_PADDING_TOP * 2 + FRET_SPACING * (FRET_COUNT - 1);
+    var draw = SVG().addTo(diagramRoot).size(diagramWidth, diagramHeight);
+    for (let fret = 0; fret < STRING_COUNT; fret++) {
+      const fretY = DIAGRAM_PADDING_TOP + fret * FRET_SPACING;
+      draw.line(DIAGRAM_PADDING_LEFT, fretY, DIAGRAM_PADDING_LEFT + STRING_SPACING * (STRING_COUNT - 1), fretY).stroke('silver');
+    }
+    for (let string = 0; string < FRET_COUNT; string++) {
+      const stringX = DIAGRAM_PADDING_LEFT + string * STRING_SPACING;
+      draw.line(stringX, DIAGRAM_PADDING_TOP, stringX, DIAGRAM_PADDING_TOP + FRET_SPACING * (FRET_COUNT - 1)).stroke('black');
+    }
+    draw.text(caption).ax(diagramWidth / 2).font({
+      size: 12,
+      weight: 'bold',
+      anchor: 'middle'
+    });
   }
 }
 
