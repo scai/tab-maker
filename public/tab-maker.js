@@ -60,7 +60,6 @@ class TabRenderer {
     document.getElementById('toggle-pitch').addEventListener('change', (e) => {
       const body = document.querySelector('body');
       const showPitch = e.target.checked;
-      console.log(showPitch)
       if (showPitch) {
         body.classList.add('show-pitch');
       } else {
@@ -380,7 +379,6 @@ class TabMakerChordDiagram extends HTMLElement {
       return;
     }
 
-    const needFretShift = false;
     const caption = match.groups['caption'];
     const diagramRoot = this.root.getElementById('diagram');
     const DIAGRAM_PADDING_LEFT = 20;
@@ -390,6 +388,22 @@ class TabMakerChordDiagram extends HTMLElement {
     const STRING_COUNT = 6;
     const FRET_COUNT = 5;
     const FRET_END_X = DIAGRAM_PADDING_LEFT + STRING_SPACING * (STRING_COUNT - 1);
+
+    // Determine if need to shift to higher frets.
+    let matchedFingering = [
+      match.groups['sixth'],
+      match.groups['fifth'],
+      match.groups['fourth'],
+      match.groups['third'],
+      match.groups['second'],
+      match.groups['first'],
+    ];
+    // Excluding fret zero, because I use open string for higher fret chords.
+    let frettedStrings = matchedFingering.filter((e) => e > 0);
+    let maxFret = Math.max(...frettedStrings);
+    let minFret = Math.min(...frettedStrings);
+    const needFretShift = (maxFret > FRET_COUNT);
+
     // Box
     const diagramWidth = DIAGRAM_PADDING_LEFT * 2 + STRING_SPACING * (STRING_COUNT - 1);
     const diagramHeight = DIAGRAM_PADDING_TOP * 2 + FRET_SPACING * (FRET_COUNT - 1);
@@ -443,7 +457,6 @@ class TabMakerChordDiagram extends HTMLElement {
         const y = DIAGRAM_PADDING_TOP + FRET_SPACING * (parseInt(fret) - 0.5);
         let circle = draw.circle(diameter).cx(x).cy(y);
         if (fret == '0') {
-          console.log(fret);
           circle.fill('none');
           circle.stroke({ width: 1, color: 'black' });
         } else {
@@ -451,12 +464,7 @@ class TabMakerChordDiagram extends HTMLElement {
         }
       }
     };
-    fingerPlacement(match.groups['sixth'], 0);
-    fingerPlacement(match.groups['fifth'], 1);
-    fingerPlacement(match.groups['fourth'], 2);
-    fingerPlacement(match.groups['third'], 3);
-    fingerPlacement(match.groups['second'], 4);
-    fingerPlacement(match.groups['first'], 5);
+    matchedFingering.forEach((value, index) => fingerPlacement(value, index));
   }
 }
 
