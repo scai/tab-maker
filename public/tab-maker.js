@@ -379,6 +379,8 @@ class TabMakerChordDiagram extends HTMLElement {
       this.root.getElementById('diagram').textContent = "ERROR";
       return;
     }
+
+    const needFretShift = false;
     const caption = match.groups['caption'];
     const diagramRoot = this.root.getElementById('diagram');
     const DIAGRAM_PADDING_LEFT = 20;
@@ -387,17 +389,20 @@ class TabMakerChordDiagram extends HTMLElement {
     const FRET_SPACING = 20;
     const STRING_COUNT = 6;
     const FRET_COUNT = 5;
+    const FRET_END_X = DIAGRAM_PADDING_LEFT + STRING_SPACING * (STRING_COUNT - 1);
+    // Box
     const diagramWidth = DIAGRAM_PADDING_LEFT * 2 + STRING_SPACING * (STRING_COUNT - 1);
     const diagramHeight = DIAGRAM_PADDING_TOP * 2 + FRET_SPACING * (FRET_COUNT - 1);
     var draw = SVG().addTo(diagramRoot).size(diagramWidth, diagramHeight);
+    // Frets
     for (let fret = 0; fret < FRET_COUNT; fret++) {
       const fretY = DIAGRAM_PADDING_TOP + fret * FRET_SPACING;
-      const fretEndX = DIAGRAM_PADDING_LEFT + STRING_SPACING * (STRING_COUNT - 1);
-      draw.line(DIAGRAM_PADDING_LEFT, fretY, fretEndX, fretY).stroke({
+      draw.line(DIAGRAM_PADDING_LEFT, fretY, FRET_END_X, fretY).stroke({
         width: 2,
         color: 'silver'
       });
     }
+    // Strings
     for (let string = 0; string < STRING_COUNT; string++) {
       const stringX = DIAGRAM_PADDING_LEFT + string * STRING_SPACING;
       const stringEndY = DIAGRAM_PADDING_TOP + FRET_SPACING * (FRET_COUNT - 1);
@@ -406,12 +411,21 @@ class TabMakerChordDiagram extends HTMLElement {
         color: 'black'
       });
     }
+    // Fret zero
+    if (!needFretShift) {
+      draw.line(DIAGRAM_PADDING_LEFT - 1, DIAGRAM_PADDING_TOP, FRET_END_X + 1, DIAGRAM_PADDING_TOP).stroke({
+        width: 4,
+        color: 'black'
+      });
+    }
+    // Caption
     draw.text(caption).ax(diagramWidth / 2).ay(0).font({
       size: 14,
       weight: 'bold',
       anchor: 'middle'
     });
 
+    // Fingering
     let fingerPlacement = (fret, col) => {
       if (!fret) {
         return;
