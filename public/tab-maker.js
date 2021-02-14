@@ -392,17 +392,57 @@ class TabMakerChordDiagram extends HTMLElement {
     var draw = SVG().addTo(diagramRoot).size(diagramWidth, diagramHeight);
     for (let fret = 0; fret < STRING_COUNT; fret++) {
       const fretY = DIAGRAM_PADDING_TOP + fret * FRET_SPACING;
-      draw.line(DIAGRAM_PADDING_LEFT, fretY, DIAGRAM_PADDING_LEFT + STRING_SPACING * (STRING_COUNT - 1), fretY).stroke('silver');
+      const fretEndX = DIAGRAM_PADDING_LEFT + STRING_SPACING * (STRING_COUNT - 1);
+      draw.line(DIAGRAM_PADDING_LEFT, fretY, fretEndX, fretY).stroke({
+        width: 2,
+        color: 'silver'
+      });
     }
     for (let string = 0; string < FRET_COUNT; string++) {
       const stringX = DIAGRAM_PADDING_LEFT + string * STRING_SPACING;
-      draw.line(stringX, DIAGRAM_PADDING_TOP, stringX, DIAGRAM_PADDING_TOP + FRET_SPACING * (FRET_COUNT - 1)).stroke('black');
+      const stringEndY = DIAGRAM_PADDING_TOP + FRET_SPACING * (FRET_COUNT - 1);
+      draw.line(stringX, DIAGRAM_PADDING_TOP, stringX, stringEndY).stroke({
+        width: 2,
+        color: 'black'
+      });
     }
-    draw.text(caption).ax(diagramWidth / 2).font({
-      size: 12,
+    draw.text(caption).ax(diagramWidth / 2).ay(0).font({
+      size: 14,
       weight: 'bold',
       anchor: 'middle'
     });
+
+    let fingerPlacement = (fret, col) => {
+      if (!fret) {
+        return;
+      }
+      if (fret == 'x') {
+        draw.text('x').ax(DIAGRAM_PADDING_LEFT + col * STRING_SPACING)
+          .ay(DIAGRAM_PADDING_TOP - 27)
+          .font({
+            size: 16,
+            anchor: 'middle'
+          });
+      } else {
+        const diameter = STRING_SPACING * 0.9;
+        const x = DIAGRAM_PADDING_LEFT + col * STRING_SPACING;
+        const y = DIAGRAM_PADDING_TOP + FRET_SPACING * (parseInt(fret) - 0.5);
+        let circle = draw.circle(diameter).cx(x).cy(y);
+        if (fret == '0') {
+          console.log(fret);
+          circle.fill('none');
+          circle.stroke({ width: 1, color: 'black' });
+        } else {
+          circle.fill('black');
+        }
+      }
+    };
+    fingerPlacement(match.groups['sixth'], 0);
+    fingerPlacement(match.groups['fifth'], 1);
+    fingerPlacement(match.groups['fourth'], 2);
+    fingerPlacement(match.groups['third'], 3);
+    fingerPlacement(match.groups['second'], 4);
+    fingerPlacement(match.groups['first'], 5);
   }
 }
 
