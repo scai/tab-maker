@@ -464,6 +464,10 @@ class TabMakerChordDiagram extends HTMLElement {
         }
       }
     };
+    if (needFretShift) {
+      matchedFingering = matchedFingering.map((e) => e > 0 ? e - minFret + 1 : e);
+    }
+    // N fr here
     matchedFingering.forEach((value, index) => fingerPlacement(value, index));
   }
 }
