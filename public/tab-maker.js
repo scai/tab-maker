@@ -365,8 +365,6 @@ class TabMakerChordDiagram extends HTMLElement {
     super();
     this.root = this.attachShadow({ mode: 'open' });
     this.root.innerHTML = `
-      <style>
-      </style>
       <div id="diagram"></div>
       `;
   }
@@ -406,7 +404,7 @@ class TabMakerChordDiagram extends HTMLElement {
 
     // Box
     const diagramWidth = DIAGRAM_PADDING_LEFT * 2 + STRING_SPACING * (STRING_COUNT - 1);
-    const diagramHeight = DIAGRAM_PADDING_TOP * 2 + FRET_SPACING * (FRET_COUNT - 1);
+    const diagramHeight = DIAGRAM_PADDING_TOP + FRET_SPACING * (FRET_COUNT - 1) + 5;
     var draw = SVG().addTo(diagramRoot).size(diagramWidth, diagramHeight);
     // Frets
     for (let fret = 0; fret < FRET_COUNT; fret++) {
@@ -473,7 +471,6 @@ class TabMakerChordDiagram extends HTMLElement {
           anchor: 'left',
         });
     }
-    // N fr here
     matchedFingering.forEach((value, index) => fingerPlacement(value, index));
   }
 }

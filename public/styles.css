@@ -18,6 +18,16 @@ label {
   user-select: none;
 }
 
+#chord-diagrams {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+}
+
+tab-maker-chord-diagram {
+  transform: scale(0.9, 0.9);
+}
+
 #tab-body section {
   margin: 1rem 0;
 }
@@ -34,15 +44,17 @@ tab-maker-measure {
   display: inline-flex;
   min-width: 4rem;
   flex-direction: row;
-  align-items:flex-start;
+  align-items: flex-start;
   transition: background 1s;
   user-select: none;
 }
+
 tab-maker-measure:first-of-type {
   border-left: solid 2px #999;
 }
+
 tab-maker-measure:hover {
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 .tab-info {
@@ -115,6 +127,6 @@ input, select, textarea {
   margin: 2px;
 }
 
-.toolbar > * {
+.toolbar>* {
   margin: 2px;
 }
