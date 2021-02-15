@@ -152,8 +152,16 @@ class TabRenderer {
     // Tab metadata
     document.getElementById('tab-title').textContent = this.tabData.title;
     document.getElementById('original-key').textContent = ChordUtil.replaceFlatSharp(this.tabData.originalKey);
+
+    // Key selected from dropdown >> deep-link key >> original key
     if (!this.isKeySelected) {
-      this.keySelect.value = this.tabData.originalKey;
+      const url = new URL(location);
+      const deepLinkKey = url.searchParams.get('key');
+      if (deepLinkKey && ChordUtil.TRANSPOSE_MAP.get(deepLinkKey)) {
+        this.keySelect.value = deepLinkKey;
+      } else {
+        this.keySelect.value = this.tabData.originalKey;
+      }
     }
 
     // Chord diagrams
@@ -189,6 +197,7 @@ class TabRenderer {
  */
 class ChordUtil {
   static TRANSPOSE_MAP = new Map([
+    ['Ab', ['Ab', 'Bb', 'C', 'Db', 'Eb', 'F', 'G']],
     ['A', ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#']],
     ['Bb', ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A']],
     ['B', ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#']],
