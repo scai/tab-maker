@@ -1,6 +1,5 @@
-
 /**
- * Web component for tab diagram.
+ * Custom element for chord diagram.
  * For example: <tab-maker-chord-diagram>"CMaj9"[x:3:2:4:3:x]</tab-maker-chord-diagram">
  */
 class TabMakerChordDiagram extends HTMLElement {
