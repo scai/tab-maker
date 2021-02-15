@@ -400,7 +400,7 @@ class TabMakerChordDiagram extends HTMLElement {
     let frettedStrings = matchedFingering.filter((e) => e > 0);
     let maxFret = Math.max(...frettedStrings);
     let minFret = Math.min(...frettedStrings);
-    const needFretShift = (maxFret > FRET_COUNT);
+    const needFretShift = (maxFret >= FRET_COUNT);
 
     // Box
     const diagramWidth = DIAGRAM_PADDING_LEFT * 2 + STRING_SPACING * (STRING_COUNT - 1);
