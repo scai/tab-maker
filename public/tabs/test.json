@@ -7,7 +7,17 @@
       "chords": [
         {
           "id": "CMaj9",
-          "data": "\"CMaj9\"[x:3:2:4:3:x]"
+          "data": "CMaj9[x:3:2:4:3:x]"
+        },
+
+        {
+          "id": "Dm7",
+          "data": "Dm7[x:x:0:2:1:1]"
+        },
+
+        {
+          "id": "EMaj9",
+          "data": "EM9[0:x:6:8:7:x]"
         }
       ]
     }
