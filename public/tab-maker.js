@@ -381,7 +381,7 @@ class TabMakerChordDiagram extends HTMLElement {
 
     const caption = match.groups['caption'];
     const diagramRoot = this.root.getElementById('diagram');
-    const DIAGRAM_PADDING_LEFT = 20;
+    const DIAGRAM_PADDING_LEFT = 40;
     const DIAGRAM_PADDING_TOP = 40;
     const STRING_SPACING = 15;
     const FRET_SPACING = 20;
@@ -466,6 +466,12 @@ class TabMakerChordDiagram extends HTMLElement {
     };
     if (needFretShift) {
       matchedFingering = matchedFingering.map((e) => e > 0 ? e - minFret + 1 : e);
+      draw.text(`- ${minFret} fr`).ax(DIAGRAM_PADDING_LEFT + 5 * STRING_SPACING + 6)
+        .ay(DIAGRAM_PADDING_TOP - 5)
+        .font({
+          size: 14,
+          anchor: 'left',
+        });
     }
     // N fr here
     matchedFingering.forEach((value, index) => fingerPlacement(value, index));
