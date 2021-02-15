@@ -464,7 +464,7 @@ class TabMakerChordDiagram extends HTMLElement {
     };
     if (needFretShift) {
       matchedFingering = matchedFingering.map((e) => e > 0 ? e - minFret + 1 : e);
-      draw.text(`- ${minFret} fr`).ax(DIAGRAM_PADDING_LEFT + 5 * STRING_SPACING + 6)
+      draw.text(`- ${minFret} fr`).ax(DIAGRAM_PADDING_LEFT + 5 * STRING_SPACING + 8)
         .ay(DIAGRAM_PADDING_TOP - 5)
         .font({
           size: 14,

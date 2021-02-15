@@ -22,6 +22,7 @@ label {
   margin-top: 1rem;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 tab-maker-chord-diagram {
