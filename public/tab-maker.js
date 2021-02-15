@@ -30,7 +30,17 @@ class TabRenderer {
       }
     });
     this.keySelect = document.getElementById('key-select');
-    this.keySelect.addEventListener('change', () => this.renderTab());
+    ChordUtil.TRANSPOSE_MAP.forEach((value, key) => {
+      const option = document.createElement('option');
+      option.setAttribute('value', key);
+      option.textContent = ChordUtil.replaceFlatSharp(key);
+      this.keySelect.appendChild(option);
+    });
+    this.isKeySelected = false;
+    this.keySelect.addEventListener('change', () => {
+      this.isKeySelected = true;
+      this.renderTab();
+    });
 
     this.tabSelect = document.getElementById('tab-select');
     this.tabSelect.addEventListener('change', () => this.openTab(this.tabSelect.value));
@@ -100,7 +110,7 @@ class TabRenderer {
 
   renderSection(s) {
     const measures = s.split('|');
-    const sectionDiv = document.createElement("div");
+    const sectionDiv = document.createElement("section");
     measures.forEach(m => {
       const measure = this.renderMeasure(m);
       if (measure) sectionDiv.appendChild(measure);
@@ -142,11 +152,14 @@ class TabRenderer {
     tabRoot.innerHTML = '';
     // Tab metadata
     document.getElementById('tab-title').textContent = this.tabData.title;
-    document.getElementById('original-key').textContent = this.tabData.originalKey;
+    document.getElementById('original-key').textContent = ChordUtil.replaceFlatSharp(this.tabData.originalKey);
+    if (!this.isKeySelected) {
+      this.keySelect.value = this.tabData.originalKey;
+    }
 
     // Chord diagrams
     const chordDiagramsRoot = document.getElementById('chord-diagrams');
-    while(chordDiagramsRoot.firstChild) {
+    while (chordDiagramsRoot.firstChild) {
       chordDiagramsRoot.removeChild(chordDiagramsRoot.firstChild);
     }
     if (this.tabData.chordDiagrams) {
@@ -176,26 +189,30 @@ class TabRenderer {
  * Examples: IV-6, iii-9, ii-7b5, I-Maj9/V
  */
 class ChordUtil {
-  static TRANSPOSE_MAP = {
-    'A': ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
-    'B': ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'],
-    'C': ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
-    'D': ['D', 'E', 'F#', 'G', 'A', 'B', 'C#'],
-    'E': ['E', 'F#', 'G#', 'A', 'B', '#C', '#D'],
-    'F': ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'],
-    'G': ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
-  }
+  static TRANSPOSE_MAP = new Map([
+    ['A', ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#']],
+    ['Bb', ['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A']],
+    ['B', ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#']],
+    ['C', ['C', 'D', 'E', 'F', 'G', 'A', 'B']],
+    ['Db', ['Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C']],
+    ['D', ['D', 'E', 'F#', 'G', 'A', 'B', 'C#']],
+    ['Eb', ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D']],
+    ['E', ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#']],
+    ['F', ['F', 'G', 'A', 'Bb', 'C', 'D', 'E']],
+    ['F#', ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'E#']],
+    ['G', ['G', 'A', 'B', 'C', 'D', 'E', 'F#']],
+  ]);
   static MAJOR_CHORDS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
   static MINOR_CHORDS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii'];
 
   static degreeToName(key, degree) {
     const majorIndex = ChordUtil.MAJOR_CHORDS.indexOf(degree);
     if (majorIndex >= 0) {
-      return ChordUtil.TRANSPOSE_MAP[key][majorIndex];
+      return ChordUtil.TRANSPOSE_MAP.get(key)[majorIndex];
     } else {
       const minorIndex = ChordUtil.MINOR_CHORDS.indexOf(degree);
       if (minorIndex >= 0) {
-        return ChordUtil.TRANSPOSE_MAP[key][minorIndex] + 'm';
+        return ChordUtil.TRANSPOSE_MAP.get(key)[minorIndex] + 'm';
       } else {
         console.log(`Unknown chord ${script}`);
         return 'ERR';
@@ -203,18 +220,25 @@ class ChordUtil {
     }
   }
 
+  static replaceFlatSharp(value) {
+    return value.replace('#', '♯').replace('b', '♭');
+  }
+
   // Transposes chord notation "script" to given "key".
   static transpose(key, script) {
     if (script.length == 0) return '';
-    const match = script.match(/(?<degree>\w+)(\-(?<quality>\w+))?(\/(?<root>\w+))?/);
+    const match = script.match(/(?<degree>[i|I|v|V]+)(?<flatsharp>b|#)?(\-(?<quality>\w+))?(\/(?<root>\w+))?/);
     let result = ChordUtil.degreeToName(key, match.groups['degree']);
+    if (match.groups['flatsharp']) {
+      result += match.groups['flatsharp'];
+    }
     if (match.groups['quality']) {
       result += match.groups['quality'];
     }
     if (match.groups['root']) {
-      result += '/' + ChordUtil.degreeToName(key, match.groups['root']);
+      result += '/' + key, match.groups['root'];
     }
-    return result;
+    return ChordUtil.replaceFlatSharp(result);
   }
 }
 
@@ -271,6 +295,7 @@ class TabMakerBlock extends HTMLElement {
 
         .lyrics {
           line-height: 1.5rem;
+          font-weight: 300;
         }
       </style>
       <div class="block-root">
