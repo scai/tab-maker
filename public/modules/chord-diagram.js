@@ -1,3 +1,5 @@
+const CHORD_DIAGRAM_PATTERN = /(?<caption>.+)\[(?<sixth>[x|\d])\:(?<fifth>[x|\d])\:(?<fourth>[x|\d])\:(?<third>[x|\d])\:(?<second>[x|\d])\:(?<first>[x|\d])\]/;
+
 /**
  * Custom element for chord diagram.
  * For example: <tab-maker-chord-diagram>"CMaj9"[x:3:2:4:3:x]</tab-maker-chord-diagram">
@@ -13,7 +15,7 @@ class TabMakerChordDiagram extends HTMLElement {
 
   connectedCallback() {
     const data = this.getAttribute('data').trim();
-    const match = data.match(/(?<caption>.+)\[(?<sixth>[x|\d])\:(?<fifth>[x|\d])\:(?<fourth>[x|\d])\:(?<third>[x|\d])\:(?<second>[x|\d])\:(?<first>[x|\d])\]/);
+    const match = data.match(CHORD_DIAGRAM_PATTERN);
     if (!match) {
       this.root.getElementById('diagram').textContent = "ERROR";
       return;

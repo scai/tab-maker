@@ -1,7 +1,14 @@
+const OCTAVE_CLASS_NAME_MAP = {
+  '-2': 'octave-down-2',
+  '-1': 'octave-down-1',
+  '+1': 'octave-up-1',
+  '+2': 'octave-up-2',
+}
+
 /**
- * Custom element for a "block".
- * A "block" consists of a chord (optional), pitch notes (optional), and lyrics (required).
- */
+* Custom element for a "block".
+* A "block" consists of a chord (optional), pitch notes (optional), and lyrics (required).
+*/
 class TabMakerBlock extends HTMLElement {
   constructor() {
     super();
@@ -88,7 +95,7 @@ class TabMakerBlock extends HTMLElement {
       const pitchMatch = pitch.match(/(?<note>\d(?:b|#)?)(?<oct>(?:\+|\-)\d)?/);
       const pitchDiv = this.root.querySelector(".pitch")
       if (pitchMatch.groups['oct']) {
-        const octaveClassName = TabMakerBlock.OCTAVE_CLASS_NAME_MAP[pitchMatch.groups['oct']];
+        const octaveClassName = OCTAVE_CLASS_NAME_MAP[pitchMatch.groups['oct']];
         if (octaveClassName) {
           pitchDiv.classList.add(octaveClassName);
         }
@@ -103,13 +110,6 @@ class TabMakerBlock extends HTMLElement {
       lineDiv.textContent = line;
       lyricsRoot.appendChild(lineDiv);
     });
-  }
-
-  static OCTAVE_CLASS_NAME_MAP = {
-    '-2': 'octave-down-2',
-    '-1': 'octave-down-1',
-    '+1': 'octave-up-1',
-    '+2': 'octave-up-2',
   }
 }
 

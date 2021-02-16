@@ -1,18 +1,20 @@
-import { ChordUtil } from './chord-util.js';
+import { ChordUtil, TRANSPOSE_MAP } from './chord-util.js';
 import { TabMakerBlock } from './block.js';
 import { TabMakerChordDiagram } from './chord-diagram.js';
 
+const LOCAL_STORAGE_KEY = 'tab data';
+const BLOCK_PATTERN = /(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))?\s*(?:(?<lyrics>.+))/;
+   
 /**
  * Renders tab script into HTML DOM.
  */
 class TabRenderer {
-  static LOCAL_STORAGE_KEY = 'tab data';
   constructor() {
     this.tabScript = document.getElementById('tab-script');
     this.tabScript.addEventListener('change', () => {
       this.renderTab();
       this.tabData.tabScript = this.tabScript.value;
-      localStorage.setItem(TabRenderer.LOCAL_STORAGE_KEY, JSON.stringify(this.tabData));
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.tabData));
     });
 
     // Triggers render when a block or measure ends.
@@ -22,7 +24,7 @@ class TabRenderer {
       }
     });
     this.keySelect = document.getElementById('key-select');
-    ChordUtil.TRANSPOSE_MAP.forEach((value, key) => {
+    TRANSPOSE_MAP.forEach((value, key) => {
       const option = document.createElement('option');
       option.setAttribute('value', key);
       option.textContent = ChordUtil.replaceFlatSharp(key);
@@ -60,15 +62,13 @@ class TabRenderer {
     });
   }
 
-  static BLOCK_PATTERN = /(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))?\s*(?:(?<lyrics>.+))/;
-
   renderBlock(b) {
     if (!b || b.length == 0) {
       return null;
     }
 
     // Matches [chord] (pitch) lyrics
-    const match = b.match(TabRenderer.BLOCK_PATTERN);
+    const match = b.match(BLOCK_PATTERN);
     if (!match) return null;
     const chord = match.groups['chord'];
     const pitch = match.groups['pitch'];
@@ -123,7 +123,7 @@ class TabRenderer {
   }
 
   openLocalStorageTab() {
-    const loadTab = localStorage.getItem(TabRenderer.LOCAL_STORAGE_KEY);
+    const loadTab = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (!loadTab || loadTab.length == 0) return false;
     try {
       this.tabData = JSON.parse(loadTab);
@@ -133,7 +133,7 @@ class TabRenderer {
       this.renderTab();
       return true;
     } catch (error) {
-      localStorage.removeItem(TabRenderer.LOCAL_STORAGE_KEY);
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
       return false;
     }
   }
@@ -149,7 +149,7 @@ class TabRenderer {
     if (!this.isKeySelected) {
       const url = new URL(location);
       const deepLinkKey = url.searchParams.get('key');
-      if (deepLinkKey && ChordUtil.TRANSPOSE_MAP.get(deepLinkKey)) {
+      if (deepLinkKey && TRANSPOSE_MAP.get(deepLinkKey)) {
         this.keySelect.value = deepLinkKey;
       } else {
         this.keySelect.value = this.tabData.originalKey;
