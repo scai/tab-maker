@@ -31,7 +31,7 @@ class ChordUtil {
       if (minorIndex >= 0) {
         return TRANSPOSE_MAP.get(key)[minorIndex] + 'm';
       } else {
-        console.log(`Unknown chord ${script}`);
+        console.log(`Unknown chord ${degree}`);
         return 'ERR';
       }
     }
@@ -53,7 +53,7 @@ class ChordUtil {
       result += match.groups['quality'];
     }
     if (match.groups['root']) {
-      result += '/' + key, match.groups['root'];
+      result += '/' + ChordUtil.degreeToName(key, match.groups['root']);
     }
     return ChordUtil.replaceFlatSharp(result);
   }
