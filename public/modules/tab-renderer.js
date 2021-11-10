@@ -4,7 +4,7 @@ import { TabMakerChordDiagram } from './chord-diagram.js';
 
 const LOCAL_STORAGE_KEY = 'tab data';
 const BLOCK_PATTERN = /(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))?\s*(?:(?<lyrics>.+))/;
-   
+
 /**
  * Renders tab script into HTML DOM.
  */
@@ -40,7 +40,9 @@ class TabRenderer {
     this.tabSelect.addEventListener('change', () => this.openTab(this.tabSelect.value));
 
     document.getElementById('dump-tab-data').addEventListener('click', () => {
-      console.log(JSON.stringify(this.tabData));
+      const dump = JSON.stringify(this.tabData);
+      navigator.clipboard.writeText(dump)
+        .then(() => console.log(dump));
     });
 
     document.getElementById('toggle-script').addEventListener('click', () => {
