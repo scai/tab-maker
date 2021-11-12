@@ -15,7 +15,7 @@ const TRANSPOSE_MAP = new Map([
 
 const MAJOR_CHORDS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
 const MINOR_CHORDS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii'];
-const CHORD_PATTERN = /(?<degree>[i|I|v|V]+)(?<flatsharp>b|#)?(\-(?<quality>\w+))?(\/(?<root>\w+))?/;
+const CHORD_PATTERN = /(?<degree>[i|I|v|V]+)(?<flatsharp>b|#)?(\-(?<quality>\w+))?(\/(?<root>\w+))?(?<rootflatsharp>b|#)?/;
 
 /**
  * Transposes chord degrees into a given key.
@@ -54,6 +54,9 @@ class ChordUtil {
     }
     if (match.groups['root']) {
       result += '/' + ChordUtil.degreeToName(key, match.groups['root']);
+    }
+    if (match.groups['rootflatsharp']) {
+      result += match.groups['rootflatsharp']
     }
     return ChordUtil.replaceFlatSharp(result);
   }
