@@ -38,7 +38,7 @@ class ChordUtil {
   }
 
   static replaceFlatSharp(value) {
-    return value.replace('#', '♯').replace('b', '♭');
+    return value.replaceAll('#', '♯').replaceAll('b', '♭');
   }
 
   // Transposes chord notation "script" to given "key".
