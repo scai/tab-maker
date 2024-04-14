@@ -6,4 +6,4 @@
 * [邰正宵 “回不去了”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-back&key=D)
 * [邰正宵 “如果你沒有愛上他”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-if&key=D)
 * [邰正宵 “搭錯心跳”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-heartbeats&key=A)
-* [邰正宵 “唯一的玫瑰 ”][https://scai.github.io/tab-maker/public/index.html?tab=samuel-only-rose&key=C]
+* [邰正宵 “唯一的玫瑰”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-only-rose&key=C)
