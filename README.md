@@ -9,3 +9,4 @@
 * [邰正宵 “唯一的玫瑰”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-only-rose&key=C)
 * [邰正宵 “各自天涯”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-separate-ways&key=G)
 * [邰正宵 “不管”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-no-matter-what&key=D)
+* [邰正宵 “我只有你”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-only-you&key=G)
