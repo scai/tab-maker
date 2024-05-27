@@ -6,15 +6,15 @@
       "key": "G",
       "chords": [
         {
-          "id": "Em-intro",
+          "id": "Em",
           "data": "Em[0:x:9:9:x:x]"
         },
         {
-          "id": "C-intro",
+          "id": "C",
           "data": "C[8:x:x:9:8:12]"
         },
         {
-          "id": "D-intro",
+          "id": "D",
           "data": "D[x:x:0:14:15:14]"
         }
       ]
