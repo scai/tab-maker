@@ -13,3 +13,4 @@
 * [邰正宵 “永遠不回頭”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-never-turning-back&key=A)
 * [邰正宵 “心要讓你聽見”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-heard&key=G)
 * [邰正宵 “爱归零”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-zero&key=G)
+* [邰正宵 “千年如一日”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-millennium&key=C)
