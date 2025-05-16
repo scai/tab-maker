@@ -14,4 +14,5 @@
 * [邰正宵 “心要讓你聽見”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-heard&key=G)
 * [邰正宵 “爱归零”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-zero&key=G)
 * [邰正宵 “千年如一日”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-millennium&key=C)
+* [邰正宵 “寂寞玩具”](https://scai.github.io/tab-maker/public/index.html?tab=samuel-lonely-toy&key=C)
 * [陶喆 “我喜欢”](https://scai.github.io/tab-maker/public/index.html?tab=davidtao-like)
