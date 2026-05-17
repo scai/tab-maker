@@ -10,6 +10,7 @@
     crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="tab-maker.js" type="module"></script>
+  <script src="modules/tabs-menu.js" type="module"></script>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;300;400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
@@ -17,6 +18,13 @@
 
 <body>
   <div class="root">
+    <div class="tabs-menu-header">
+      <button class="tabs-menu-toggle" id="tabs-menu-toggle">📋 标签菜单</button>
+      <div class="tabs-menu-dropdown" id="tabs-menu-dropdown">
+        <input type="text" class="tabs-menu-search" id="tabs-menu-search" placeholder="Search tabs...">
+        <ul class="tabs-menu-list" id="tabs-menu-list"></ul>
+      </div>
+    </div>
     <div id="tab-root">
       <div class="tab-info">
         <h1 id="tab-title"></h1>

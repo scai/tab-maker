@@ -60,6 +60,7 @@ tab-maker-measure:hover {
 
 .tab-info {
   margin: .5rem;
+  padding-top: 70px;
 }
 
 .tab-info ul {
@@ -130,4 +131,93 @@ input, select, textarea {
 
 .toolbar>* {
   margin: 2px;
+}
+
+/* Tabs Menu Dropdown Styles */
+.tabs-menu-header {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+}
+
+.tabs-menu-toggle {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tabs-menu-toggle:hover {
+  background-color: #45a049;
+}
+
+.tabs-menu-toggle:active {
+  transform: scale(0.98);
+}
+
+.tabs-menu-dropdown {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  min-width: 250px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 999;
+  display: none;
+}
+
+.tabs-menu-dropdown.active {
+  display: block;
+}
+
+.tabs-menu-search {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
+  font-size: 0.9rem;
+}
+
+.tabs-menu-search:focus {
+  outline: none;
+  background-color: #f0f0f0;
+}
+
+.tabs-menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tabs-menu-list li {
+  padding: 10px 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.tabs-menu-list li:hover {
+  background-color: #f0f0f0;
+}
+
+.tabs-menu-list li.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.tabs-menu-list li:last-child {
+  border-bottom: none;
 }
