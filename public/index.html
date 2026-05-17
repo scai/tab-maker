@@ -17,7 +17,7 @@
 </head>
 
 <body>
-  <div class="root">
+  <div class="root editor-closed">
     <div class="tabs-menu-header">
       <button class="tabs-menu-toggle" id="tabs-menu-toggle">选曲</button>
       <button class="tabs-menu-toggle" id="toggle-script">编辑器</button>
@@ -47,6 +47,7 @@
       </div>
       <div id="tab-body"></div>
     </div>
+    <div id="editor-splitter" role="separator" aria-orientation="vertical" aria-label="Resize editor"></div>
     <div class="editor">
       <div class="toolbar">
         <select id="tab-select" hidden aria-hidden="true" tabindex="-1"></select>

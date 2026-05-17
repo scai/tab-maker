@@ -79,6 +79,7 @@ tab-maker-measure:hover {
   background-color: antiquewhite;
   overflow-y: scroll;
   padding: .25rem .5rem;
+  min-width: 0;
 }
 
 #tab-script {
@@ -86,7 +87,10 @@ tab-maker-measure:hover {
   font-family: monospace;
   resize: none;
   line-height: 1.5em;
-  height: 40vh;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
 }
 
 #tab-script.hidden {
@@ -108,18 +112,48 @@ input, select, textarea {
 }
 
 .root {
+  --editor-width: 38vw;
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
   display: grid;
-  grid-template-rows: auto min-content;
+  grid-template-columns: minmax(0, 1fr) 8px minmax(18rem, var(--editor-width));
+  grid-template-rows: minmax(0, 1fr);
 }
 
 .editor {
   display: grid;
-  grid-template-rows: min-content auto;
+  grid-template-rows: min-content minmax(0, 1fr);
+  min-width: 0;
+  overflow: hidden;
+  background: #fff;
+}
+
+.root.editor-closed {
+  grid-template-columns: minmax(0, 1fr) 0 0;
+}
+
+.root.editor-closed .editor,
+.root.editor-closed #editor-splitter {
+  display: none;
+}
+
+#editor-splitter {
+  background: #d2c5ac;
+  cursor: col-resize;
+  transition: background 0.15s ease;
+}
+
+#editor-splitter:hover,
+body.resizing-editor #editor-splitter {
+  background: #8f7f61;
+}
+
+body.resizing-editor {
+  cursor: col-resize;
+  user-select: none;
 }
 
 .toolbar {

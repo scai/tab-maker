@@ -55,12 +55,9 @@ class TabRenderer {
     });
 
     document.getElementById('toggle-script').addEventListener('click', () => {
-      if (this.tabScript.classList.contains('hidden')) {
-        this.tabScript.classList.remove('hidden');
-      } else {
-        this.tabScript.classList.add('hidden');
-      }
+      this.toggleEditor();
     });
+    this.setupEditorSplitter();
 
     document.getElementById('toggle-pitch').addEventListener('change', (e) => {
       const body = document.querySelector('body');
@@ -148,6 +145,50 @@ class TabRenderer {
         throw error;
       }
     }
+  }
+
+  toggleEditor() {
+    const root = document.querySelector('.root');
+    const isClosed = root.classList.toggle('editor-closed');
+    this.tabScript.classList.toggle('hidden', isClosed);
+    document.getElementById('toggle-script').setAttribute('aria-pressed', String(!isClosed));
+  }
+
+  setupEditorSplitter() {
+    const root = document.querySelector('.root');
+    const splitter = document.getElementById('editor-splitter');
+    if (!splitter) return;
+
+    const startResize = (event) => {
+      event.preventDefault();
+      document.body.classList.add('resizing-editor');
+      if (event.pointerId !== undefined && splitter.setPointerCapture) {
+        splitter.setPointerCapture(event.pointerId);
+      }
+    };
+
+    const resize = (event) => {
+      if (!document.body.classList.contains('resizing-editor')) return;
+      const minPaneWidth = 280;
+      const maxEditorWidth = Math.max(minPaneWidth, window.innerWidth - minPaneWidth);
+      const editorWidth = Math.min(Math.max(window.innerWidth - event.clientX, minPaneWidth), maxEditorWidth);
+      root.style.setProperty('--editor-width', `${editorWidth}px`);
+    };
+
+    const stopResize = (event) => {
+      document.body.classList.remove('resizing-editor');
+      if (event.pointerId !== undefined && splitter.hasPointerCapture && splitter.hasPointerCapture(event.pointerId)) {
+        splitter.releasePointerCapture(event.pointerId);
+      }
+    };
+
+    splitter.addEventListener('pointerdown', startResize);
+    splitter.addEventListener('pointermove', resize);
+    splitter.addEventListener('pointerup', stopResize);
+    splitter.addEventListener('pointercancel', stopResize);
+    splitter.addEventListener('mousedown', startResize);
+    document.addEventListener('mousemove', resize);
+    document.addEventListener('mouseup', stopResize);
   }
 
   openTab(id) {
