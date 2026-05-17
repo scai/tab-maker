@@ -125,7 +125,7 @@ input, select, textarea {
 
 .editor {
   display: grid;
-  grid-template-rows: min-content minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   min-width: 0;
   overflow: hidden;
   background: #fff;
@@ -154,17 +154,6 @@ body.resizing-editor #editor-splitter {
 body.resizing-editor {
   cursor: col-resize;
   user-select: none;
-}
-
-.toolbar {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin: 2px;
-}
-
-.toolbar>* {
-  margin: 2px;
 }
 
 /* Tabs Menu Dropdown Styles */
