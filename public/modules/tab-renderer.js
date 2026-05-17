@@ -36,8 +36,13 @@ class TabRenderer {
       this.renderTab();
     });
 
+    document.addEventListener('tab-maker:select-tab', (event) => {
+      this.openTab(event.detail.tabId);
+    });
     this.tabSelect = document.getElementById('tab-select');
-    this.tabSelect.addEventListener('change', () => this.openTab(this.tabSelect.value));
+    if (this.tabSelect) {
+      this.tabSelect.addEventListener('change', () => this.openTab(this.tabSelect.value));
+    }
 
     document.getElementById('dump-tab-data').addEventListener('click', () => {
       const dump = JSON.stringify(this.tabData);
@@ -112,6 +117,10 @@ class TabRenderer {
   }
 
   openTab(id) {
+    if (this.currentTabId === id) {
+      return;
+    }
+    this.currentTabId = id;
     $.get(`./tabs/${id}.json`)
       .done((data) => {
         this.tabData = data;

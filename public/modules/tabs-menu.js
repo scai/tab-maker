@@ -118,17 +118,20 @@ class TabsMenuManager {
 
   selectTab(tabId) {
     this.currentTab = tabId;
-    // Trigger the tab select dropdown to load the tab
     const tabSelect = document.getElementById('tab-select');
-    if (![...tabSelect.options].some((option) => option.value === tabId)) {
-      const option = document.createElement('option');
-      option.value = tabId;
-      option.textContent = this.getTabTitle(this.allTabs.find((tab) => this.getTabId(tab) === tabId) || tabId);
-      tabSelect.appendChild(option);
+    if (tabSelect) {
+      if (![...tabSelect.options].some((option) => option.value === tabId)) {
+        const option = document.createElement('option');
+        option.value = tabId;
+        option.textContent = this.getTabTitle(this.allTabs.find((tab) => this.getTabId(tab) === tabId) || tabId);
+        tabSelect.appendChild(option);
+      }
+      tabSelect.value = tabId;
+      tabSelect.dispatchEvent(new Event('change', { bubbles: true }));
     }
-    tabSelect.value = tabId;
-    // Trigger change event
-    tabSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    document.dispatchEvent(new CustomEvent('tab-maker:select-tab', {
+      detail: { tabId },
+    }));
     // Update active styling in menu
     this.renderTabs(this.allTabs);
   }
