@@ -139,6 +139,9 @@ input, select, textarea {
   top: 10px;
   left: 10px;
   z-index: 1000;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
 }
 
 .tabs-menu-toggle {
