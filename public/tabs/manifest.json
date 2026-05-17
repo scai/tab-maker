@@ -1,20 +1,68 @@
 {
-  "tabs": [
-    "davidtao-like",
-    "drifter",
-    "eve-ai-1",
-    "samuel-back",
-    "samuel-heard",
-    "samuel-heartbeats",
-    "samuel-if",
-    "samuel-lonely-toy",
-    "samuel-millennium",
-    "samuel-never-turning-back",
-    "samuel-no-matter-what",
-    "samuel-only-rose",
-    "samuel-only-you",
-    "samuel-separate-ways",
-    "samuel-zero",
-    "test"
-  ]
+    "tabs":  [
+                 {
+                     "id":  "davidtao-like",
+                     "title":  "陶喆 - 我喜欢"
+                 },
+                 {
+                     "id":  "drifter",
+                     "title":  "林俊杰 - 幸存者"
+                 },
+                 {
+                     "id":  "eve-ai-1",
+                     "title":  "艾怡良 - 我這個人"
+                 },
+                 {
+                     "id":  "samuel-back",
+                     "title":  "邰正宵 - 如果你没有爱上他"
+                 },
+                 {
+                     "id":  "samuel-heard",
+                     "title":  "邰正宵 - 心要讓你聽見"
+                 },
+                 {
+                     "id":  "samuel-heartbeats",
+                     "title":  "邰正宵 - 搭錯心跳"
+                 },
+                 {
+                     "id":  "samuel-if",
+                     "title":  "邰正宵 - 如果你没有爱上他"
+                 },
+                 {
+                     "id":  "samuel-lonely-toy",
+                     "title":  "邰正宵 - 寂寞玩具"
+                 },
+                 {
+                     "id":  "samuel-millennium",
+                     "title":  "邰正宵 - 千年如一日"
+                 },
+                 {
+                     "id":  "samuel-never-turning-back",
+                     "title":  "邰正宵 - 永遠不回頭 "
+                 },
+                 {
+                     "id":  "samuel-no-matter-what",
+                     "title":  "邰正宵 - 不管"
+                 },
+                 {
+                     "id":  "samuel-only-rose",
+                     "title":  "邰正宵 - 唯一的玫瑰"
+                 },
+                 {
+                     "id":  "samuel-only-you",
+                     "title":  "邰正宵 - 我只有你"
+                 },
+                 {
+                     "id":  "samuel-separate-ways",
+                     "title":  "邰正宵 - 各自天涯"
+                 },
+                 {
+                     "id":  "samuel-zero",
+                     "title":  "邰正宵 - 爱归零"
+                 },
+                 {
+                     "id":  "test",
+                     "title":  "测试歌曲"
+                 }
+             ]
 }

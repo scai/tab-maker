@@ -9,7 +9,8 @@ class TabsMenuManager {
     this.tabsList = document.getElementById('tabs-menu-list');
     this.searchInput = document.getElementById('tabs-menu-search');
     this.allTabs = [];
-    this.currentTab = 'test';
+    const url = new URL(location);
+    this.currentTab = url.searchParams.get('tab') || 'test';
 
     this.setupEventListeners();
     this.loadTabsList();
@@ -40,8 +41,8 @@ class TabsMenuManager {
     // Close dropdown when a tab is selected
     this.tabsList.addEventListener('click', (e) => {
       if (e.target.tagName === 'LI') {
-        const tabName = e.target.dataset.tab;
-        this.selectTab(tabName);
+        const tabId = e.target.dataset.tab;
+        this.selectTab(tabId);
         this.dropdown.classList.remove('active');
       }
     });
@@ -73,10 +74,11 @@ class TabsMenuManager {
     }
 
     tabs.forEach((tab) => {
+      const tabId = this.getTabId(tab);
       const li = document.createElement('li');
-      li.textContent = this.formatTabName(tab);
-      li.dataset.tab = tab;
-      if (tab === this.currentTab) {
+      li.textContent = this.getTabTitle(tab);
+      li.dataset.tab = tabId;
+      if (tabId === this.currentTab) {
         li.classList.add('active');
       }
       this.tabsList.appendChild(li);
@@ -90,26 +92,41 @@ class TabsMenuManager {
     }
 
     const filtered = this.allTabs.filter((tab) =>
-      tab.toLowerCase().includes(searchTerm) ||
-      this.formatTabName(tab).toLowerCase().includes(searchTerm)
+      this.getTabId(tab).toLowerCase().includes(searchTerm) ||
+      this.getTabTitle(tab).toLowerCase().includes(searchTerm)
     );
     this.renderTabs(filtered);
   }
 
-  formatTabName(tabId) {
-    // Convert tab ID to readable format
-    // e.g., "samuel-no-matter-what" -> "Samuel - No Matter What"
+  getTabId(tab) {
+    return typeof tab === 'string' ? tab : tab.id;
+  }
+
+  getTabTitle(tab) {
+    if (typeof tab !== 'string') {
+      return tab.title || this.formatTabId(tab.id);
+    }
+    return this.formatTabId(tab);
+  }
+
+  formatTabId(tabId) {
     return tabId
       .split('-')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   }
 
-  selectTab(tabName) {
-    this.currentTab = tabName;
+  selectTab(tabId) {
+    this.currentTab = tabId;
     // Trigger the tab select dropdown to load the tab
     const tabSelect = document.getElementById('tab-select');
-    tabSelect.value = tabName;
+    if (![...tabSelect.options].some((option) => option.value === tabId)) {
+      const option = document.createElement('option');
+      option.value = tabId;
+      option.textContent = this.getTabTitle(this.allTabs.find((tab) => this.getTabId(tab) === tabId) || tabId);
+      tabSelect.appendChild(option);
+    }
+    tabSelect.value = tabId;
     // Trigger change event
     tabSelect.dispatchEvent(new Event('change', { bubbles: true }));
     // Update active styling in menu
