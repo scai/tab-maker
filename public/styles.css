@@ -221,3 +221,25 @@ input, select, textarea {
 .tabs-menu-list li:last-child {
   border-bottom: none;
 }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  z-index: 1100;
+  transform: translate(-50%, 0.5rem);
+  padding: 0.45rem 0.8rem;
+  border-radius: 4px;
+  background: rgba(51, 51, 51, 0.92);
+  color: white;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}

@@ -46,8 +46,12 @@ class TabRenderer {
 
     document.getElementById('dump-tab-data').addEventListener('click', () => {
       const dump = JSON.stringify(this.tabData);
-      navigator.clipboard.writeText(dump)
-        .then(() => console.log(dump));
+      this.copyTextToClipboard(dump)
+        .then(() => {
+          console.log(dump);
+          this.showToast('JSON已复制到剪贴板');
+        })
+        .catch(() => this.showToast('复制失败，请重试'));
     });
 
     document.getElementById('toggle-script').addEventListener('click', () => {
@@ -114,6 +118,36 @@ class TabRenderer {
       if (measure) sectionDiv.appendChild(measure);
     });
     return sectionDiv;
+  }
+
+  showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('visible');
+    clearTimeout(this.toastTimeoutId);
+    this.toastTimeoutId = setTimeout(() => {
+      toast.classList.remove('visible');
+    }, 1800);
+  }
+
+  async copyTextToClipboard(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return;
+    } catch (error) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      const copied = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      if (!copied) {
+        throw error;
+      }
+    }
   }
 
   openTab(id) {

@@ -49,12 +49,13 @@
     <div class="editor">
       <div class="toolbar">
         <select id="tab-select" hidden aria-hidden="true" tabindex="-1"></select>
-        <button id="dump-tab-data">Dump</button>
+        <button id="dump-tab-data">复制JSON</button>
         <button id="toggle-script">Editor</button>
       </div>
       <textarea id="tab-script" class="hidden"></textarea>
     </div>
   </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script type="module">
     import { tabMakerMain } from './tab-maker.js';
     document.addEventListener('DOMContentLoaded', tabMakerMain);
