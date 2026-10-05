@@ -4,6 +4,7 @@ html {
   color: #333;
   font-size: 25px;
   --main-font: 'Noto Sans SC', sans-serif;
+  --menu-bar-height: 36px;
   font-family: var(--main-font);
 }
 
@@ -60,7 +61,7 @@ tab-maker-measure:hover {
 
 .tab-info {
   margin: .5rem;
-  padding-top: 70px;
+  padding-top: 12px;
 }
 
 .tab-info ul {
@@ -116,7 +117,7 @@ input, select, textarea {
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
+  top: var(--menu-bar-height);
   bottom: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 8px minmax(18rem, var(--editor-width));
@@ -156,45 +157,89 @@ body.resizing-editor {
   user-select: none;
 }
 
-/* Tabs Menu Dropdown Styles */
+/* Compact menu bar inspired by macOS. */
 .tabs-menu-header {
   position: fixed;
-  top: 10px;
-  left: 10px;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--menu-bar-height);
+  box-sizing: border-box;
+  padding: 0 8px;
   z-index: 1000;
   display: flex;
-  gap: 8px;
-  align-items: flex-start;
+  gap: 2px;
+  align-items: center;
+  background: rgba(245, 244, 241, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .tabs-menu-toggle {
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px 16px;
+  background: transparent;
+  color: #222;
+  padding: 4px 12px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
+}
+
+.tabs-menu-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-right: 8px;
+  color: #344538;
+  text-decoration: none;
+  font-family: 'Fredoka', 'Noto Sans SC', sans-serif;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.tabs-menu-brand img {
+  display: block;
+  object-fit: contain;
+}
+
+.tabs-menu-brand:focus-visible {
+  outline: 2px solid #B8543D;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .tabs-menu-toggle:hover {
-  background-color: #45a049;
+  background-color: rgba(0, 0, 0, 0.08);
 }
 
-.tabs-menu-toggle:active {
-  transform: scale(0.98);
+.tabs-menu-toggle:active,
+.tabs-menu-toggle[aria-pressed="true"],
+.tabs-menu-header:has(.tabs-menu-dropdown.active) #tabs-menu-toggle {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+.tabs-menu-toggle:focus-visible {
+  outline: 2px solid #3478f6;
+  outline-offset: -2px;
 }
 
 .tabs-menu-dropdown {
   position: absolute;
-  top: 50px;
-  left: 0;
-  background-color: white;
+  top: calc(100% + 4px);
+  left: 8px;
+  background-color: rgba(250, 250, 250, 0.97);
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 8px;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   min-width: 250px;
   max-height: 400px;
@@ -213,7 +258,7 @@ body.resizing-editor {
   border: none;
   border-bottom: 1px solid #ddd;
   box-sizing: border-box;
-  font-size: 0.9rem;
+  font-size: 16px;
 }
 
 .tabs-menu-search:focus {
@@ -232,7 +277,7 @@ body.resizing-editor {
   cursor: pointer;
   border-bottom: 1px solid #f0f0f0;
   transition: background-color 0.2s ease;
-  font-size: 0.95rem;
+  font-size: 14px;
 }
 
 .tabs-menu-list li:hover {
@@ -240,7 +285,7 @@ body.resizing-editor {
 }
 
 .tabs-menu-list li.active {
-  background-color: #4CAF50;
+  background-color: #3478f6;
   color: white;
 }
 
@@ -268,4 +313,74 @@ body.resizing-editor {
 .toast.visible {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+/* Keep the desktop score size, but fit controls and notation on phones. */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+    --menu-bar-height: 44px;
+  }
+
+  /* Keep text fields readable and avoid automatic zoom when focused on phones. */
+  input, select, textarea,
+  .tabs-menu-search {
+    font-size: 16px;
+  }
+
+  .root {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .root.editor-closed {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  #editor-splitter {
+    display: none;
+  }
+
+  .editor {
+    border-top: 1px solid #d2c5ac;
+  }
+
+  .tabs-menu-toggle {
+    padding: 10px 8px;
+    min-height: 44px;
+  }
+
+  .tabs-menu-brand {
+    gap: 4px;
+    margin-right: 4px;
+    font-size: 18px;
+  }
+
+  .tabs-menu-brand img {
+    width: 26px;
+    height: 26px;
+  }
+
+  .tabs-menu-dropdown {
+    top: calc(100% + 6px);
+    min-width: 0;
+    width: min(320px, calc(100% - 16px));
+    max-height: 60vh;
+  }
+
+  .tab-info {
+    margin: .25rem;
+    padding-top: 8px;
+  }
+
+  .tab-info ul {
+    flex-wrap: wrap;
+    gap: .5rem 1rem;
+    align-items: center;
+  }
+
+  .tab-info ul li {
+    margin-right: 0;
+  }
 }
