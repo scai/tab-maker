@@ -269,3 +269,68 @@ body.resizing-editor {
   opacity: 1;
   transform: translate(-50%, 0);
 }
+
+/* Keep the desktop score size, but fit controls and notation on phones. */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+
+  /* Keep text fields readable and avoid automatic zoom when focused on phones. */
+  input, select, textarea,
+  .tabs-menu-search {
+    font-size: 16px;
+  }
+
+  .root {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .root.editor-closed {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  #editor-splitter {
+    display: none;
+  }
+
+  .editor {
+    border-top: 1px solid #d2c5ac;
+  }
+
+  .tabs-menu-header {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    gap: 6px;
+  }
+
+  .tabs-menu-toggle {
+    padding: 10px;
+    min-height: 44px;
+  }
+
+  .tabs-menu-dropdown {
+    top: calc(100% + 6px);
+    min-width: 0;
+    width: min(320px, 100%);
+    max-height: 60vh;
+  }
+
+  .tab-info {
+    margin: .25rem;
+    padding-top: 60px;
+  }
+
+  .tab-info ul {
+    flex-wrap: wrap;
+    gap: .5rem 1rem;
+    align-items: center;
+  }
+
+  .tab-info ul li {
+    margin-right: 0;
+  }
+}
