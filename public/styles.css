@@ -30,21 +30,25 @@ tab-maker-chord-diagram {
   transform: scale(0.9, 0.9);
 }
 
+#tab-body {
+  font-size: calc(1rem * var(--tab-text-scale, 1));
+}
+
 #tab-body section {
-  margin: 1rem 0;
+  margin: 1em 0;
 }
 
 tab-maker-block {
   display: inline-block;
-  margin: 0 0.1rem;
+  margin: 0 0.1em;
 }
 
 tab-maker-measure {
   border-right: solid 2px #999;
-  margin: .5rem 0;
-  padding: 0 .5rem;
+  margin: .5em 0;
+  padding: 0 .5em;
   display: inline-flex;
-  min-width: 4rem;
+  min-width: 4em;
   flex-direction: row;
   align-items: flex-start;
   transition: background 1s;
@@ -226,6 +230,12 @@ body.resizing-editor {
   outline-offset: -2px;
 }
 
+.tabs-menu-toggle:disabled {
+  opacity: 0.4;
+  cursor: default;
+  background: transparent;
+}
+
 .tabs-menu-dropdown {
   position: absolute;
   top: calc(100% + 4px);
@@ -340,7 +350,7 @@ body.resizing-editor {
   }
 
   .tabs-menu-toggle {
-    padding: 10px 8px;
+    padding: 10px 6px;
     min-height: 44px;
   }
 
@@ -379,6 +389,16 @@ body.resizing-editor {
 }
 
 @media (max-width: 480px) {
+  html {
+    --menu-bar-height: 88px;
+  }
+
+  .tabs-menu-header {
+    flex-wrap: wrap;
+    align-content: center;
+    row-gap: 0;
+  }
+
   .tabs-menu-brand span {
     display: none;
   }
