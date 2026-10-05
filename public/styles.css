@@ -192,6 +192,32 @@ body.resizing-editor {
   transition: background-color 0.15s ease;
 }
 
+.tabs-menu-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-right: 8px;
+  color: #344538;
+  text-decoration: none;
+  font-family: 'Fredoka', 'Noto Sans SC', sans-serif;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.tabs-menu-brand img {
+  display: block;
+  object-fit: contain;
+}
+
+.tabs-menu-brand:focus-visible {
+  outline: 2px solid #B8543D;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .tabs-menu-toggle:hover {
   background-color: rgba(0, 0, 0, 0.08);
 }
@@ -321,8 +347,19 @@ body.resizing-editor {
   }
 
   .tabs-menu-toggle {
-    padding: 10px 12px;
+    padding: 10px 8px;
     min-height: 44px;
+  }
+
+  .tabs-menu-brand {
+    gap: 4px;
+    margin-right: 4px;
+    font-size: 18px;
+  }
+
+  .tabs-menu-brand img {
+    width: 26px;
+    height: 26px;
   }
 
   .tabs-menu-dropdown {
