@@ -1,5 +1,15 @@
 # 吉他扒谱记谱
 
+## Install and use offline
+
+Tab Maker can be installed from a browser's install menu, or with Safari's Share → Add to Home Screen. Open the app online once and let it finish loading to prepare offline access to all bundled songs. It supports portrait and landscape orientation, subject to your device's rotation settings. Web fonts require a connection; offline mode uses system fonts.
+
+For local preview, serve `public` at `http://localhost` (for example, `python -m http.server 8000 --directory public`). PWA installation and service workers require HTTPS on hosted sites; localhost is supported for development. Relative manifest and worker paths also support the GitHub Pages `/tab-maker/public/` location.
+
+When releasing changes to the app or songs, bump the cache version in `public/sw.js`. The new version activates after all existing app windows close; reopen the app to use it. The worker only caches app files and bundled songs, and does not change saved editor data in local storage.
+
+Browser checks: with Node.js and Playwright installed, run `node tests/pwa.cjs`. The test uses Microsoft Edge by default; set `PLAYWRIGHT_CHANNEL=chrome` to use Chrome. It checks the manifest and icon dimensions, offline reloads and every bundled song, chord diagrams, transposition, pitch display, and editor layouts in portrait and landscape at both root and subdirectory hosting paths.
+
 ## 记谱语法 / Notation Syntax
 * [English syntax guide](docs/syntax.en.md)
 * [中文记谱语法](docs/syntax.zh-CN.md)
