@@ -1,6 +1,6 @@
 // Bump the version whenever the app shell or bundled songs change.
 const CACHE_PREFIX = `tab-maker:${self.registration.scope}:`;
-const CACHE_NAME = `${CACHE_PREFIX}v6`;
+const CACHE_NAME = `${CACHE_PREFIX}v7`;
 const APP_SHELL = [
   './', './index.html', './styles.css', './tab-maker.js?v=pwa-5', './pwa.js',
   './manifest.webmanifest', './octave.svg', './vendor/svg.min.js',

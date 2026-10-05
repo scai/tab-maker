@@ -63,6 +63,23 @@ class TabRenderer {
       const showPitch = document.body.classList.toggle('show-pitch');
       e.currentTarget.setAttribute('aria-pressed', String(showPitch));
     });
+    this.setupTabSizeControls();
+  }
+
+  setupTabSizeControls() {
+    const tabBody = document.getElementById('tab-body');
+    const decrease = document.getElementById('decrease-tab-size');
+    const increase = document.getElementById('increase-tab-size');
+    let size = 10;
+    const updateSize = (delta) => {
+      size = Math.min(20, Math.max(5, size + delta));
+      tabBody.style.setProperty('--tab-text-scale', size / 10);
+      decrease.disabled = size === 5;
+      increase.disabled = size === 20;
+    };
+    decrease.addEventListener('click', () => updateSize(-1));
+    increase.addEventListener('click', () => updateSize(1));
+    updateSize(0);
   }
 
   renderBlock(b) {

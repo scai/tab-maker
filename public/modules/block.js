@@ -17,10 +17,10 @@ class TabMakerBlock extends HTMLElement {
       <style>
         .block { 
           text-align: center;
-          line-height: 1.2rem;
+          line-height: 1.2em;
         }
         .block-root {
-          margin: .1rem;
+          margin: .1em;
         }
 
         .block.pitch {
@@ -61,7 +61,7 @@ class TabMakerBlock extends HTMLElement {
         }
 
         .lyrics {
-          line-height: 1.5rem;
+          line-height: 1.5em;
           font-weight: 300;
         }
       </style>

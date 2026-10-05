@@ -61,6 +61,26 @@ const server = http.createServer((request, response) => {
       await page.goto(`${origin}${base}index.html?tab=test&key=C`);
       await page.waitForSelector('tab-maker-chord-diagram');
       assert.ok(await page.locator('tab-maker-chord-diagram svg').count());
+      const notationSize = () => page.locator('tab-maker-block .lyrics').first()
+        .evaluate(element => parseFloat(getComputedStyle(element).fontSize));
+      const originalSize = await notationSize();
+      const editorSize = await page.locator('#tab-script')
+        .evaluate(element => getComputedStyle(element).fontSize);
+      await page.locator('#increase-tab-size').click();
+      assert.ok(Math.abs(await notationSize() - originalSize * 1.1) < 0.01);
+      await page.locator('#decrease-tab-size').press('Enter');
+      assert.equal(await notationSize(), originalSize);
+      for (let i = 0; i < 10; i++) await page.locator('#increase-tab-size').click();
+      assert.ok(await page.locator('#increase-tab-size').isDisabled());
+      assert.equal(await notationSize(), originalSize * 2);
+      assert.equal(await page.locator('tab-maker-block .lyrics').first()
+        .evaluate(element => parseFloat(getComputedStyle(element).lineHeight)), originalSize * 3);
+      for (let i = 0; i < 15; i++) await page.locator('#decrease-tab-size').click();
+      assert.ok(await page.locator('#decrease-tab-size').isDisabled());
+      assert.equal(await notationSize(), originalSize * 0.5);
+      for (let i = 0; i < 5; i++) await page.locator('#increase-tab-size').click();
+      assert.equal(await page.locator('#tab-script')
+        .evaluate(element => getComputedStyle(element).fontSize), editorSize);
       await page.locator('#toggle-pitch').click();
       assert.equal(await page.locator('#toggle-pitch').getAttribute('aria-pressed'), 'true');
       assert.ok(await page.locator('body').evaluate(body => body.classList.contains('show-pitch')));
@@ -78,6 +98,13 @@ const server = http.createServer((request, response) => {
       for (const viewport of [{width:320,height:844}, {width:390,height:844},
         {width:665,height:884}, {width:844,height:390}]) {
         await page.setViewportSize(viewport);
+        for (const id of ['decrease-tab-size', 'increase-tab-size', 'dump-tab-data']) {
+          assert.ok(await page.locator(`#${id}`).evaluate(button => {
+            const rect = button.getBoundingClientRect();
+            const menu = button.closest('nav').getBoundingClientRect();
+            return rect.left >= 0 && rect.right <= innerWidth && rect.bottom <= menu.bottom;
+          }));
+        }
         assert.equal(await page.locator('.tabs-menu-header #toggle-pitch').count(), 1);
         assert.ok(await page.locator('#toggle-pitch').evaluate(button =>
           button.getBoundingClientRect().right <= innerWidth));
@@ -87,7 +114,7 @@ const server = http.createServer((request, response) => {
         await page.locator('#toggle-script').click();
       }
       assert.deepEqual(errors, []);
-      console.log(`PASS ${base}: manifest, icons, offline reload, all ${songs.length} songs, diagrams, transposition, pitch, portrait/landscape editor`);
+      console.log(`PASS ${base}: manifest, icons, offline reload, all ${songs.length} songs, diagrams, transposition, text size, pitch, portrait/landscape editor`);
       await context.close();
     }
   } finally {
