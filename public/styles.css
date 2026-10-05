@@ -377,3 +377,9 @@ body.resizing-editor {
     margin-right: 0;
   }
 }
+
+@media (max-width: 480px) {
+  .tabs-menu-brand span {
+    display: none;
+  }
+}

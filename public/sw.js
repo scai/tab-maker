@@ -1,11 +1,11 @@
 // Bump the version whenever the app shell or bundled songs change.
 const CACHE_PREFIX = `tab-maker:${self.registration.scope}:`;
-const CACHE_NAME = `${CACHE_PREFIX}v3`;
+const CACHE_NAME = `${CACHE_PREFIX}v6`;
 const APP_SHELL = [
-  './', './index.html', './styles.css', './tab-maker.js?v=pwa-2', './pwa.js',
+  './', './index.html', './styles.css', './tab-maker.js?v=pwa-5', './pwa.js',
   './manifest.webmanifest', './octave.svg', './vendor/svg.min.js',
   './modules/block.js', './modules/chord-util.js', './modules/chord-diagram.js',
-  './modules/tab-renderer.js?v=pwa-2', './modules/tabs-menu.js',
+  './modules/tab-renderer.js?v=pwa-5', './modules/tabs-menu.js',
   './assets/logo.png', './assets/favicon.ico', './assets/favicon-32.png',
   './assets/apple-touch-icon.png', './assets/icon-192.png',
   './assets/icon-512.png', './assets/icon-maskable-512.png', './tabs/manifest.json'

@@ -59,14 +59,9 @@ class TabRenderer {
     });
     this.setupEditorSplitter();
 
-    document.getElementById('toggle-pitch').addEventListener('change', (e) => {
-      const body = document.querySelector('body');
-      const showPitch = e.target.checked;
-      if (showPitch) {
-        body.classList.add('show-pitch');
-      } else {
-        body.classList.remove('show-pitch');
-      }
+    document.getElementById('toggle-pitch').addEventListener('click', (e) => {
+      const showPitch = document.body.classList.toggle('show-pitch');
+      e.currentTarget.setAttribute('aria-pressed', String(showPitch));
     });
   }
 
