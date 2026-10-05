@@ -5,14 +5,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tab Maker</title>
+  <meta name="theme-color" content="#f5f4f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="assets/favicon-32.png" sizes="32x32">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.0.16/svg.min.js"
-    integrity="sha512-p3Tp2zn+wApBreZCgRkmMwnfpN8MUPXzzOihXx7iGYXqE7t6m9drY8HeyMeeFuDWiTFKrGUrq3jpbT0vX6zY/Q=="
-    crossorigin="anonymous"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="tab-maker.js" type="module"></script>
+  <script src="vendor/svg.min.js"></script>
+  <script src="pwa.js" defer></script>
+  <script src="tab-maker.js?v=pwa-2" type="module"></script>
   <script src="modules/tabs-menu.js" type="module"></script>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
@@ -23,10 +25,10 @@
 <body>
   <div class="root editor-closed">
     <nav class="tabs-menu-header" aria-label="主菜单">
-      <a class="tabs-menu-brand" href="./" aria-label="Tab Maker home">
+      <div class="tabs-menu-brand">
         <img src="assets/logo.png" width="30" height="30" alt="">
         <span>tab maker</span>
-      </a>
+      </div>
       <button class="tabs-menu-toggle" id="tabs-menu-toggle">选曲</button>
       <button class="tabs-menu-toggle" id="toggle-script">编辑器</button>
       <button class="tabs-menu-toggle" id="dump-tab-data">复制JSON</button>
@@ -64,7 +66,7 @@
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script type="module">
-    import { tabMakerMain } from './tab-maker.js';
+    import { tabMakerMain } from './tab-maker.js?v=pwa-2';
     document.addEventListener('DOMContentLoaded', tabMakerMain);
   </script>
 </body>

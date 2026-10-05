@@ -191,21 +191,24 @@ class TabRenderer {
     document.addEventListener('mouseup', stopResize);
   }
 
-  openTab(id) {
+  async openTab(id) {
     if (this.currentTabId === id) {
       return;
     }
     this.currentTabId = id;
-    $.get(`./tabs/${id}.json`)
-      .done((data) => {
-        this.tabData = data;
-        this.tabScript.value = data.tabScript;
-        this.renderTab();
-      })
-      .fail(() => {
-        this.tabScript.value = "failed to load " + id;
-        this.renderTab();
-      });
+    try {
+      const response = await fetch(`./tabs/${id}.json`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      if (this.currentTabId !== id) return;
+      this.tabData = data;
+      this.tabScript.value = data.tabScript;
+      this.renderTab();
+    } catch (error) {
+      if (this.currentTabId !== id) return;
+      this.currentTabId = null;
+      this.showToast('failed to load ' + id);
+    }
   }
 
   openLocalStorageTab() {
