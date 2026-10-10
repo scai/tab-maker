@@ -31,6 +31,7 @@ class TabMakerBlock extends HTMLElement {
         }
         
         .octave{
+          filter: var(--octave-filter, none);
           height: 5px;
           text-align:center;
           background-repeat: no-repeat;

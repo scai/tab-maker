@@ -50,12 +50,13 @@ class TabMakerChordDiagram extends HTMLElement {
     const diagramWidth = DIAGRAM_PADDING_LEFT * 2 + STRING_SPACING * (STRING_COUNT - 1);
     const diagramHeight = DIAGRAM_PADDING_TOP + FRET_SPACING * (FRET_COUNT - 1) + 5;
     var draw = SVG().addTo(diagramRoot).size(diagramWidth, diagramHeight);
+    draw.fill('currentColor');
     // Frets
     for (let fret = 0; fret < FRET_COUNT; fret++) {
       const fretY = DIAGRAM_PADDING_TOP + fret * FRET_SPACING;
       draw.line(DIAGRAM_PADDING_LEFT, fretY, FRET_END_X, fretY).stroke({
         width: 2,
-        color: 'silver'
+        color: 'var(--border, silver)'
       });
     }
     // Strings
@@ -64,14 +65,14 @@ class TabMakerChordDiagram extends HTMLElement {
       const stringEndY = DIAGRAM_PADDING_TOP + FRET_SPACING * (FRET_COUNT - 1);
       draw.line(stringX, DIAGRAM_PADDING_TOP, stringX, stringEndY).stroke({
         width: 2,
-        color: 'black'
+        color: 'currentColor'
       });
     }
     // Fret zero
     if (!needFretShift) {
       draw.line(DIAGRAM_PADDING_LEFT - 1, DIAGRAM_PADDING_TOP, FRET_END_X + 1, DIAGRAM_PADDING_TOP).stroke({
         width: 4,
-        color: 'black'
+        color: 'currentColor'
       });
     }
     // Caption
@@ -100,9 +101,9 @@ class TabMakerChordDiagram extends HTMLElement {
         let circle = draw.circle(diameter).cx(x).cy(y);
         if (fret == '0') {
           circle.fill('none');
-          circle.stroke({ width: 1, color: 'black' });
+          circle.stroke({ width: 1, color: 'currentColor' });
         } else {
-          circle.fill('black');
+          circle.fill('currentColor');
         }
       }
     };

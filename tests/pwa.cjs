@@ -57,9 +57,42 @@ const server = http.createServer((request, response) => {
       assert.deepEqual(appManifest.errors, []);
       assert.equal(JSON.parse(appManifest.data).orientation, 'any');
       const songs = JSON.parse(fs.readFileSync(path.join(publicDir, 'tabs/manifest.json'))).tabs;
+      // Follow the system until a user chooses a theme, then persist that choice.
+      await page.emulateMedia({ colorScheme: 'dark' });
+      await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
+      assert.equal(await page.locator('#toggle-theme').getAttribute('aria-pressed'), 'true');
+      const lightSystemOverride = async () => {
+        await page.locator('#toggle-theme').press('Enter');
+        assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
+        await page.emulateMedia({ colorScheme: 'light' });
+        await page.emulateMedia({ colorScheme: 'dark' });
+        assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
+      };
+      await lightSystemOverride();
+      await page.locator('#toggle-theme').press('Space');
+      await page.locator('#toggle-script').click();
+      if (process.env.THEME_SCREENSHOT_DIR && base === '/') {
+        await page.setViewportSize({ width: 1280, height: 800 });
+        await page.screenshot({ path: path.join(process.env.THEME_SCREENSHOT_DIR, 'theme-dark.png'), animations: 'disabled' });
+        await page.locator('#toggle-theme').click();
+        await page.screenshot({ path: path.join(process.env.THEME_SCREENSHOT_DIR, 'theme-light.png'), animations: 'disabled' });
+        await page.locator('#toggle-theme').click();
+        await page.setViewportSize({ width: 320, height: 844 });
+        await page.screenshot({ path: path.join(process.env.THEME_SCREENSHOT_DIR, 'theme-mobile.png'), animations: 'disabled' });
+        await page.setViewportSize({ width: 390, height: 844 });
+      }
+      await page.locator('#toggle-script').click();
       await context.setOffline(true);
       await page.goto(`${origin}${base}index.html?tab=test&key=C`);
       await page.waitForSelector('tab-maker-chord-diagram');
+      assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
+      assert.equal(await page.locator('#toggle-theme').getAttribute('aria-pressed'), 'true');
+      assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'), '#242824');
+      const diagramColor = () => page.locator('tab-maker-chord-diagram svg text').first()
+        .evaluate(element => getComputedStyle(element).fill);
+      assert.equal(await diagramColor(), 'rgb(236, 238, 228)');
+      await page.locator('#toggle-theme').click();
+      assert.equal(await diagramColor(), 'rgb(48, 55, 47)');
       assert.ok(await page.locator('tab-maker-chord-diagram svg').count());
       const notationSize = () => page.locator('tab-maker-block .lyrics').first()
         .evaluate(element => parseFloat(getComputedStyle(element).fontSize));
@@ -111,7 +144,7 @@ const server = http.createServer((request, response) => {
       for (const viewport of [{width:320,height:844}, {width:390,height:844},
         {width:665,height:884}, {width:844,height:390}]) {
         await page.setViewportSize(viewport);
-        for (const id of ['decrease-tab-size', 'increase-tab-size', 'dump-tab-data']) {
+        for (const id of ['decrease-tab-size', 'increase-tab-size', 'dump-tab-data', 'toggle-theme']) {
           assert.ok(await page.locator(`#${id}`).evaluate(button => {
             const rect = button.getBoundingClientRect();
             const menu = button.closest('nav').getBoundingClientRect();
@@ -142,7 +175,7 @@ const server = http.createServer((request, response) => {
         document.querySelector('.editor').remove();
         document.querySelector('#editor-splitter').remove();
         document.querySelector('.tabs-menu-header').remove();
-        const { TabRenderer } = await import('./modules/tab-renderer.js?v=pwa-9');
+        const { TabRenderer } = await import('./modules/tab-renderer.js?v=pwa-10');
         new TabRenderer().renderTab({
           title: 'Standalone renderer', originalKey: 'C', tabScript: '[I] (1) Independent rendering',
         }, 'D');
