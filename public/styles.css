@@ -235,6 +235,7 @@ tab-maker-measure:hover {
 }
 
 .editor-toolbar button:hover { background: var(--hover); }
+#split-lyrics { width: auto; padding-inline: 10px; }
 .editor-toolbar button:focus-visible { outline: 2px solid var(--focus); }
 .editor-toolbar svg {
   width: 20px;

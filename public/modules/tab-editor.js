@@ -14,6 +14,9 @@ class TabEditor {
     this.tabScript.addEventListener('compositionend', () => this.commitScript());
     this.tabScript.addEventListener('change', () => this.commitScript());
     this.tabScript.addEventListener('scroll', () => this.syncHighlightScroll());
+    const splitButton = document.getElementById('split-lyrics');
+    splitButton.addEventListener('mousedown', event => event.preventDefault());
+    splitButton.addEventListener('click', () => this.splitLyrics());
     for (const action of ['undo', 'redo']) {
       const button = document.getElementById(`${action}-script`);
       // Keep the text selection when clicking an editor history control.
@@ -41,6 +44,27 @@ class TabEditor {
     this.tabData = { ...this.tabData, tabScript: this.tabScript.value };
     this.onChange(this.tabData);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.tabData));
+  }
+
+  splitLyrics() {
+    const start = this.tabScript.selectionStart;
+    const end = this.tabScript.selectionEnd;
+    if (start === end) {
+      this.showToast('请先选中要拆分的歌词');
+      this.tabScript.focus();
+      return;
+    }
+    const selected = this.tabScript.value.slice(start, end);
+    const segmenter = new Intl.Segmenter('zh', { granularity: 'grapheme' });
+    // Preserve whitespace and line boundaries while splitting each lyric run.
+    const replacement = selected.replace(/\S+/gu, run =>
+      Array.from(segmenter.segment(run), ({ segment }) => `(0)${segment}`).join(','));
+    if (replacement === selected) return;
+    this.tabScript.focus();
+    this.tabScript.setSelectionRange(start, end);
+    // Insert as a native edit so undo restores the entire selection in one step.
+    document.execCommand('insertText', false, replacement);
+    this.tabScript.setSelectionRange(start, start + replacement.length);
   }
 
   highlightScript() {
