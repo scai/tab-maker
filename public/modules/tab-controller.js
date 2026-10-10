@@ -1,6 +1,6 @@
 import { ChordUtil, TRANSPOSE_MAP } from './chord-util.js';
-import { TabRenderer } from './tab-renderer.js?v=pwa-10';
-import { TabEditor } from './tab-editor.js?v=pwa-10';
+import { TabRenderer } from './tab-renderer.js?v=pwa-11';
+import { TabEditor } from './tab-editor.js?v=pwa-11';
 
 /**
  * Coordinates songs, display controls, URL state, and editor changes.
@@ -131,6 +131,9 @@ class TabController {
     }
 
     this.renderer.renderTab(this.tabData, this.keySelect.value);
+    const capoFret = ChordUtil.capoFret(this.tabData.originalKey, this.keySelect.value);
+    document.getElementById('capo-position').textContent = capoFret === null ? ''
+      : capoFret === 0 ? '变调夹：无需（0 品）' : `变调夹：第 ${capoFret} 品`;
     this.syncUrl();
   }
 }
