@@ -13,6 +13,8 @@ Browser checks: with Node.js and Playwright installed, run `node tests/pwa.cjs`.
 ## 记谱语法 / Notation Syntax
 The source editor colors chords, pitches, and notation separators, and saves edits as you type. Use Ctrl/Cmd+Z to undo and Ctrl/Cmd+Shift+Z to redo, or the editor's history buttons. Its font stack prefers Chinese monospace fonts (Sarasa Mono SC, Noto Sans Mono CJK, Source Han Mono), then system CJK monospace fonts and the browser's monospace fallback. Install one of the preferred fonts for consistent Chinese/ASCII spacing across platforms; no network font is required by the editor.
 
+Select lyrics and click **拆分歌词** to add a pitch placeholder to each character: `喔喔喔` becomes `(0)喔,(0)喔,(0)喔`. Spaces and line breaks are preserved. Undo restores the original selection in one step.
+
 * [English syntax guide](docs/syntax.en.md)
 * [中文记谱语法](docs/syntax.zh-CN.md)
 

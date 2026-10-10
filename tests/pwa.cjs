@@ -178,6 +178,28 @@ const server = http.createServer((request, response) => {
       await page.locator('#toggle-script').click();
       const editedScript = '[I] (1) Editor regression check';
       const source = page.locator('#tab-script');
+      await source.fill('[I]喔喔喔|尾声');
+      await source.evaluate(el => el.setSelectionRange(3, 6));
+      await page.locator('#split-lyrics').click();
+      const splitScript = '[I](0)喔,(0)喔,(0)喔|尾声';
+      assert.equal(await source.inputValue(), splitScript);
+      assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('tab data')).tabScript), splitScript);
+      assert.equal(await page.locator('#script-highlight .syntax-pitch').count(), 3);
+      assert.equal(await page.locator('tab-maker-block .lyrics').first().textContent(), '喔');
+      await page.locator('#undo-script').click();
+      assert.equal(await source.inputValue(), '[I]喔喔喔|尾声');
+      await page.locator('#redo-script').click();
+      assert.equal(await source.inputValue(), splitScript);
+      await source.fill('喔🙂e\u0301\n爱 你');
+      await source.selectText();
+      await page.locator('#split-lyrics').focus();
+      await page.locator('#split-lyrics').press('Enter');
+      assert.equal(await source.inputValue(), '(0)喔,(0)🙂,(0)e\u0301\n(0)爱 (0)你');
+      await source.evaluate(el => el.setSelectionRange(0, 0));
+      const unchanged = await source.inputValue();
+      await page.locator('#split-lyrics').click();
+      assert.equal(await source.inputValue(), unchanged);
+      assert.equal(await page.locator('#toast').textContent(), '请先选中要拆分的歌词');
       assert.ok(await source.evaluate(el => {
         const context = document.createElement('canvas').getContext('2d');
         const style = getComputedStyle(el);
@@ -228,7 +250,7 @@ const server = http.createServer((request, response) => {
         document.querySelector('.editor').remove();
         document.querySelector('#editor-splitter').remove();
         document.querySelector('.tabs-menu-header').remove();
-        const { TabRenderer } = await import('./modules/tab-renderer.js?v=pwa-13');
+        const { TabRenderer } = await import('./modules/tab-renderer.js?v=pwa-14');
         new TabRenderer().renderTab({
           title: 'Standalone renderer', originalKey: 'C', tabScript: '[I] (1) Independent rendering',
         }, 'D');
