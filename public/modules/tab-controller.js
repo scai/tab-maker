@@ -1,6 +1,6 @@
 import { ChordUtil, TRANSPOSE_MAP } from './chord-util.js';
-import { TabRenderer } from './tab-renderer.js?v=pwa-11';
-import { TabEditor } from './tab-editor.js?v=pwa-11';
+import { TabRenderer } from './tab-renderer.js?v=pwa-13';
+import { TabEditor } from './tab-editor.js?v=pwa-13';
 
 /**
  * Coordinates songs, display controls, URL state, and editor changes.

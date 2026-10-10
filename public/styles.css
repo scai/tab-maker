@@ -17,6 +17,9 @@
   --toast: #30372f;
   --toast-text: #fffdf8;
   --octave-filter: none;
+  --syntax-chord: #8b3eb0;
+  --syntax-pitch: #006a9b;
+  --syntax-separator: #a34c14;
 }
 
 :root[data-theme="dark"] {
@@ -38,6 +41,9 @@
   --toast: #eceee4;
   --toast-text: #1c211e;
   --octave-filter: invert(1);
+  --syntax-chord: #d9a5f2;
+  --syntax-pitch: #80d4f5;
+  --syntax-separator: #ffc08b;
 }
 
 html {
@@ -158,15 +164,91 @@ tab-maker-measure:hover {
   min-width: 0;
 }
 
-#tab-script {
+#tab-script, #script-highlight {
   display: block;
-  font-family: monospace;
+  font-family: 'Sarasa Mono SC', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK TC', 'Source Han Mono SC', 'Source Han Mono', Consolas, Menlo, 'DejaVu Sans Mono', 'NSimSun', 'MS Gothic', 'MingLiU', monospace;
   resize: none;
-  line-height: 1.5em;
+  line-height: 1.5;
+  font-size: 16px;
+  font-weight: normal;
+  letter-spacing: normal;
+  tab-size: 4;
+  padding: 10px;
+  margin: 0;
+  border: 0;
+  white-space: pre;
+  overflow: scroll;
   width: 100%;
   height: 100%;
   min-height: 0;
   box-sizing: border-box;
+}
+
+.script-source {
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+}
+
+#script-highlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  color: var(--text);
+}
+
+#tab-script {
+  position: relative;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--text);
+}
+
+#tab-script::selection {
+  background: var(--pressed);
+  color: var(--text);
+}
+
+.syntax-chord { color: var(--syntax-chord); }
+.syntax-pitch { color: var(--syntax-pitch); }
+.syntax-separator { color: var(--syntax-separator); }
+
+.editor-toolbar {
+  display: flex;
+  gap: 6px;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.editor-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+  padding: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.editor-toolbar button:hover { background: var(--hover); }
+.editor-toolbar button:focus-visible { outline: 2px solid var(--focus); }
+.editor-toolbar svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (forced-colors: active) {
+  #tab-script { color: CanvasText; }
+  #script-highlight { visibility: hidden; }
 }
 
 #tab-script.hidden {
@@ -201,7 +283,7 @@ input, select, textarea {
 
 .editor {
   display: grid;
-  grid-template-rows: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
   min-width: 0;
   overflow: hidden;
   background: var(--surface);

@@ -1,11 +1,11 @@
 // Bump the version whenever the app shell or bundled songs change.
 const CACHE_PREFIX = `tab-maker:${self.registration.scope}:`;
-const CACHE_NAME = `${CACHE_PREFIX}v11`;
+const CACHE_NAME = `${CACHE_PREFIX}v13`;
 const APP_SHELL = [
-  './', './index.html', './styles.css', './tab-maker.js?v=pwa-11', './pwa.js', './theme.js',
+  './', './index.html', './styles.css', './tab-maker.js?v=pwa-13', './pwa.js', './theme.js',
   './manifest.webmanifest', './octave.svg', './vendor/svg.min.js',
   './modules/block.js', './modules/chord-util.js', './modules/chord-diagram.js',
-  './modules/tab-renderer.js?v=pwa-11', './modules/tab-controller.js?v=pwa-11', './modules/tab-editor.js?v=pwa-11', './modules/tabs-menu.js',
+  './modules/tab-renderer.js?v=pwa-13', './modules/tab-controller.js?v=pwa-13', './modules/tab-editor.js?v=pwa-13', './modules/tabs-menu.js',
   './assets/logo.png', './assets/favicon.ico', './assets/favicon-32.png',
   './assets/apple-touch-icon.png', './assets/icon-192.png',
   './assets/icon-512.png', './assets/icon-maskable-512.png', './tabs/manifest.json'

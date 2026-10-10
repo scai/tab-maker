@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <script src="vendor/svg.min.js"></script>
   <script src="pwa.js" defer></script>
-  <script src="tab-maker.js?v=pwa-11" type="module"></script>
+  <script src="tab-maker.js?v=pwa-13" type="module"></script>
   <script src="modules/tabs-menu.js" type="module"></script>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
@@ -63,12 +63,23 @@
     <div id="editor-splitter" role="separator" aria-orientation="vertical" aria-label="Resize editor"></div>
     <div class="editor">
       <select id="tab-select" hidden aria-hidden="true" tabindex="-1"></select>
-      <textarea id="tab-script" class="hidden"></textarea>
+      <div class="editor-toolbar" role="toolbar" aria-label="编辑历史">
+        <button id="undo-script" type="button" aria-label="撤销" title="撤销 (Ctrl/Cmd+Z)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 4 10l5 5M4 10h10a6 6 0 0 1 6 6v3"/></svg>
+        </button>
+        <button id="redo-script" type="button" aria-label="重做" title="重做 (Ctrl/Cmd+Shift+Z)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5 5 5-5 5m5-5H10a6 6 0 0 0-6 6v3"/></svg>
+        </button>
+      </div>
+      <div class="script-source">
+        <pre id="script-highlight" aria-hidden="true"></pre>
+        <textarea id="tab-script" class="hidden" aria-label="谱面源代码" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"></textarea>
+      </div>
     </div>
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script type="module">
-    import { tabMakerMain } from './tab-maker.js?v=pwa-11';
+    import { tabMakerMain } from './tab-maker.js?v=pwa-13';
     document.addEventListener('DOMContentLoaded', tabMakerMain);
   </script>
 </body>
