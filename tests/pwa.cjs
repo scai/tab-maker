@@ -126,6 +126,30 @@ const server = http.createServer((request, response) => {
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
         await page.locator('#toggle-script').click();
       }
+      // Editing persists data and updates the rendered notation.
+      await page.locator('#toggle-script').click();
+      const editedScript = '[I] (1) Editor regression check';
+      await page.locator('#tab-script').fill(editedScript);
+      await page.locator('#tab-script').dispatchEvent('change');
+      assert.equal(await page.locator('tab-maker-block .lyrics').first().textContent(), 'Editor regression check');
+      assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('tab data')).tabScript), editedScript);
+      await page.goto(origin + base);
+      await page.waitForFunction(() => document.querySelector('#tab-title').textContent.includes('(from Local Storage)'));
+      assert.equal(await page.locator('#tab-script').inputValue(), editedScript);
+
+      // Rendering also works without the editor or its controls in the DOM.
+      await page.evaluate(async () => {
+        document.querySelector('.editor').remove();
+        document.querySelector('#editor-splitter').remove();
+        document.querySelector('.tabs-menu-header').remove();
+        const { TabRenderer } = await import('./modules/tab-renderer.js?v=pwa-9');
+        new TabRenderer().renderTab({
+          title: 'Standalone renderer', originalKey: 'C', tabScript: '[I] (1) Independent rendering',
+        }, 'D');
+      });
+      assert.equal(await page.locator('#tab-title').textContent(), 'Standalone renderer');
+      assert.equal(await page.locator('tab-maker-block').first().getAttribute('chord'), 'D');
+      assert.equal(await page.locator('tab-maker-block .lyrics').first().textContent(), 'Independent rendering');
       assert.deepEqual(errors, []);
       console.log(`PASS ${base}: manifest, icons, offline reload, all ${songs.length} songs, diagrams, transposition, text size, pitch, portrait/landscape editor`);
       await context.close();

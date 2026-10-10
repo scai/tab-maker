@@ -1,14 +1,14 @@
-import { TabRenderer } from './modules/tab-renderer.js?v=pwa-8';
+import { TabController } from './modules/tab-controller.js?v=pwa-9';
 
 function tabMakerMain() {
-  const renderer = new TabRenderer();
+  const controller = new TabController();
   // Check for deep-link first.
   const url = new URL(location);
   const deepLinkTab = url.searchParams.get('tab');
   if (deepLinkTab) {
-    renderer.openTab(deepLinkTab);
+    controller.openTab(deepLinkTab);
   } else {
-    renderer.openLocalStorageTab() || renderer.openTab('test');
+    controller.openLocalStorageTab() || controller.openTab('test');
   }
 }
 
