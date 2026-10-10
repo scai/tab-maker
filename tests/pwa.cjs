@@ -61,9 +61,11 @@ const server = http.createServer((request, response) => {
       await page.emulateMedia({ colorScheme: 'dark' });
       await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
       assert.equal(await page.locator('#toggle-theme').getAttribute('aria-pressed'), 'true');
+      assert.equal(await page.locator('#toggle-theme').textContent(), '深色模式');
       const lightSystemOverride = async () => {
         await page.locator('#toggle-theme').press('Enter');
         assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
+        assert.equal(await page.locator('#toggle-theme').textContent(), '浅色模式');
         await page.emulateMedia({ colorScheme: 'light' });
         await page.emulateMedia({ colorScheme: 'dark' });
         assert.equal(await page.locator('html').getAttribute('data-theme'), 'light');
@@ -94,6 +96,13 @@ const server = http.createServer((request, response) => {
       await page.locator('#toggle-theme').click();
       assert.equal(await diagramColor(), 'rgb(48, 55, 47)');
       assert.ok(await page.locator('tab-maker-chord-diagram svg').count());
+      assert.equal(await page.locator('#capo-position').textContent(), '变调夹：无需（0 品）');
+      // Original C played with Bb shapes needs capo 2; B shapes wrap to capo 1.
+      await page.locator('#key-select').selectOption('Bb');
+      assert.equal(await page.locator('#capo-position').textContent(), '变调夹：第 2 品');
+      await page.locator('#key-select').selectOption('B');
+      assert.equal(await page.locator('#capo-position').textContent(), '变调夹：第 1 品');
+      await page.locator('#key-select').selectOption('C');
       const notationSize = () => page.locator('tab-maker-block .lyrics').first()
         .evaluate(element => parseFloat(getComputedStyle(element).fontSize));
       const originalSize = await notationSize();
@@ -124,6 +133,7 @@ const server = http.createServer((request, response) => {
       assert.ok(await page.locator('body').evaluate(body => !body.classList.contains('show-pitch')));
       await page.locator('#key-select').selectOption('D');
       assert.equal(await page.locator('#key-select').inputValue(), 'D');
+      assert.equal(await page.locator('#capo-position').textContent(), '变调夹：第 10 品');
       assert.equal(new URL(page.url()).searchParams.get('key'), 'D');
       await page.locator('#toggle-pitch').click();
       await page.reload();
@@ -140,6 +150,11 @@ const server = http.createServer((request, response) => {
         assert.equal(new URL(page.url()).searchParams.get('nn'), '1');
         assert.equal(await page.locator('#tab-select').inputValue(), song.id);
         assert.equal(await page.locator('#tabs-menu-list li.active').getAttribute('data-tab'), song.id);
+        const originalKey = JSON.parse(fs.readFileSync(path.join(publicDir, `tabs/${song.id}.json`))).originalKey;
+        const chromaticKeys = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
+        const expectedCapo = (chromaticKeys.indexOf(originalKey === 'G#' ? 'Ab' : originalKey) - 2 + 12) % 12;
+        assert.equal(await page.locator('#capo-position').textContent(), expectedCapo === 0
+          ? '变调夹：无需（0 品）' : `变调夹：第 ${expectedCapo} 品`);
       }
       for (const viewport of [{width:320,height:844}, {width:390,height:844},
         {width:665,height:884}, {width:844,height:390}]) {
@@ -175,7 +190,7 @@ const server = http.createServer((request, response) => {
         document.querySelector('.editor').remove();
         document.querySelector('#editor-splitter').remove();
         document.querySelector('.tabs-menu-header').remove();
-        const { TabRenderer } = await import('./modules/tab-renderer.js?v=pwa-10');
+        const { TabRenderer } = await import('./modules/tab-renderer.js?v=pwa-11');
         new TabRenderer().renderTab({
           title: 'Standalone renderer', originalKey: 'C', tabScript: '[I] (1) Independent rendering',
         }, 'D');

@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <script src="vendor/svg.min.js"></script>
   <script src="pwa.js" defer></script>
-  <script src="tab-maker.js?v=pwa-10" type="module"></script>
+  <script src="tab-maker.js?v=pwa-11" type="module"></script>
   <script src="modules/tabs-menu.js" type="module"></script>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@
       <button class="tabs-menu-toggle" id="decrease-tab-size" type="button" aria-label="缩小谱面文字" title="缩小谱面文字">−</button>
       <button class="tabs-menu-toggle" id="increase-tab-size" type="button" aria-label="放大谱面文字" title="放大谱面文字">+</button>
       <button class="tabs-menu-toggle" id="dump-tab-data">复制JSON</button>
-      <button class="tabs-menu-toggle" id="toggle-theme" type="button" aria-label="深色模式" aria-pressed="false">深色模式</button>
+      <button class="tabs-menu-toggle" id="toggle-theme" type="button" aria-label="深色模式" aria-pressed="false">浅色模式</button>
       <div class="tabs-menu-dropdown" id="tabs-menu-dropdown">
         <input type="text" class="tabs-menu-search" id="tabs-menu-search" placeholder="Search tabs...">
         <ul class="tabs-menu-list" id="tabs-menu-list"></ul>
@@ -52,6 +52,7 @@
           <li><label for="key-select">转调：</label>
             <select id="key-select">
             </select>
+            <span id="capo-position" role="status" aria-live="polite"></span>
           </li>
         </ul>
         <div id="chord-diagrams">
@@ -67,7 +68,7 @@
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script type="module">
-    import { tabMakerMain } from './tab-maker.js?v=pwa-10';
+    import { tabMakerMain } from './tab-maker.js?v=pwa-11';
     document.addEventListener('DOMContentLoaded', tabMakerMain);
   </script>
 </body>

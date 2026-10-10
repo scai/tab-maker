@@ -14,7 +14,7 @@ function applyTheme(theme) {
   const button = document.getElementById('toggle-theme');
   if (button) {
     button.setAttribute('aria-pressed', String(theme === 'dark'));
-    button.textContent = theme === 'dark' ? '浅色模式' : '深色模式';
+    button.textContent = theme === 'dark' ? '深色模式' : '浅色模式';
   }
 }
 

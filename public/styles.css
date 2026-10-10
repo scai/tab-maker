@@ -123,6 +123,34 @@ tab-maker-measure:hover {
   margin-right: 1rem;
 }
 
+.tab-info ul li:has(#key-select) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+#capo-position {
+  margin-inline-start: 0.25rem;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+#key-select {
+  background-color: var(--page);
+  color: var(--text);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0.1rem 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+#key-select:hover {
+  background-color: var(--hover);
+  border-color: var(--border);
+}
+
 #tab-root {
   background-color: var(--page);
   overflow-y: scroll;

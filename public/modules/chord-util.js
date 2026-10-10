@@ -22,6 +22,21 @@ const CHORD_PATTERN = /(?<degree>[i|I|v|V]+)(?<flatsharp>b|#)?(\-(?<quality>\w+)
  * Examples: IV-6, iii-9, ii-7b5, I-Maj9/V
  */
 class ChordUtil {
+  // A capo raises the selected chord shapes to the song's original pitch.
+  static capoFret(originalKey, selectedKey) {
+    const pitchClass = (key) => {
+      const match = /^([A-G])([b#♭♯]?)$/.exec(key);
+      if (!match) return null;
+      const notes = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+      const accidental = match[2] === 'b' || match[2] === '♭' ? -1
+        : match[2] === '#' || match[2] === '♯' ? 1 : 0;
+      return (notes[match[1]] + accidental + 12) % 12;
+    };
+    const original = pitchClass(originalKey);
+    const selected = pitchClass(selectedKey);
+    return original === null || selected === null ? null : (original - selected + 12) % 12;
+  }
+
   static degreeToName(key, degree) {
     const majorIndex = MAJOR_CHORDS.indexOf(degree);
     if (majorIndex >= 0) {
