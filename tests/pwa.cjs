@@ -82,18 +82,31 @@ const server = http.createServer((request, response) => {
       assert.equal(await page.locator('#tab-script')
         .evaluate(element => getComputedStyle(element).fontSize), editorSize);
       await page.locator('#toggle-pitch').click();
+      assert.equal(new URL(page.url()).searchParams.get('nn'), '1');
       assert.equal(await page.locator('#toggle-pitch').getAttribute('aria-pressed'), 'true');
       assert.ok(await page.locator('body').evaluate(body => body.classList.contains('show-pitch')));
       await page.locator('#toggle-pitch').press('Space');
+      assert.equal(new URL(page.url()).searchParams.get('nn'), '0');
       assert.equal(await page.locator('#toggle-pitch').getAttribute('aria-pressed'), 'false');
       assert.ok(await page.locator('body').evaluate(body => !body.classList.contains('show-pitch')));
       await page.locator('#key-select').selectOption('D');
       assert.equal(await page.locator('#key-select').inputValue(), 'D');
+      assert.equal(new URL(page.url()).searchParams.get('key'), 'D');
+      await page.locator('#toggle-pitch').click();
+      await page.reload();
+      await page.waitForSelector('tab-maker-block');
+      assert.equal(await page.locator('#key-select').inputValue(), 'D');
+      assert.equal(await page.locator('#toggle-pitch').getAttribute('aria-pressed'), 'true');
       for (const song of songs) {
         await page.locator('#tabs-menu-toggle').click();
         await page.locator(`[data-tab="${song.id}"]`).click();
         await page.waitForFunction(title => document.querySelector('#tab-title').textContent === title,
           JSON.parse(fs.readFileSync(path.join(publicDir, `tabs/${song.id}.json`))).title);
+        assert.equal(new URL(page.url()).searchParams.get('tab'), song.id);
+        assert.equal(new URL(page.url()).searchParams.get('key'), 'D');
+        assert.equal(new URL(page.url()).searchParams.get('nn'), '1');
+        assert.equal(await page.locator('#tab-select').inputValue(), song.id);
+        assert.equal(await page.locator('#tabs-menu-list li.active').getAttribute('data-tab'), song.id);
       }
       for (const viewport of [{width:320,height:844}, {width:390,height:844},
         {width:665,height:884}, {width:844,height:390}]) {

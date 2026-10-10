@@ -17,6 +17,10 @@ class TabsMenuManager {
   }
 
   setupEventListeners() {
+    document.addEventListener('tab-maker:tab-loaded', (event) => {
+      this.currentTab = event.detail.tabId;
+      this.filterTabs(this.searchInput.value.toLowerCase());
+    });
     // Toggle dropdown on button click
     this.toggleBtn.addEventListener('click', () => {
       this.dropdown.classList.toggle('active');
@@ -40,7 +44,7 @@ class TabsMenuManager {
 
     // Close dropdown when a tab is selected
     this.tabsList.addEventListener('click', (e) => {
-      if (e.target.tagName === 'LI') {
+      if (e.target.tagName === 'LI' && e.target.dataset.tab) {
         const tabId = e.target.dataset.tab;
         this.selectTab(tabId);
         this.dropdown.classList.remove('active');

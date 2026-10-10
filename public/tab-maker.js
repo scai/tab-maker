@@ -1,4 +1,4 @@
-import { TabRenderer } from './modules/tab-renderer.js?v=pwa-5';
+import { TabRenderer } from './modules/tab-renderer.js?v=pwa-8';
 
 function tabMakerMain() {
   const renderer = new TabRenderer();
