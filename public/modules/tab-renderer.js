@@ -59,11 +59,23 @@ class TabRenderer {
     });
     this.setupEditorSplitter();
 
+    const showPitch = new URL(location).searchParams.get('nn') === '1';
+    document.body.classList.toggle('show-pitch', showPitch);
+    document.getElementById('toggle-pitch').setAttribute('aria-pressed', String(showPitch));
     document.getElementById('toggle-pitch').addEventListener('click', (e) => {
       const showPitch = document.body.classList.toggle('show-pitch');
       e.currentTarget.setAttribute('aria-pressed', String(showPitch));
+      this.syncUrl();
     });
     this.setupTabSizeControls();
+  }
+
+  syncUrl() {
+    const url = new URL(location);
+    if (this.currentTabId) url.searchParams.set('tab', this.currentTabId);
+    if (this.keySelect.value) url.searchParams.set('key', this.keySelect.value);
+    url.searchParams.set('nn', document.body.classList.contains('show-pitch') ? '1' : '0');
+    history.replaceState(history.state, '', url);
   }
 
   setupTabSizeControls() {
@@ -216,6 +228,16 @@ class TabRenderer {
       this.tabData = data;
       this.tabScript.value = data.tabScript;
       this.renderTab();
+      if (this.tabSelect) {
+        if (![...this.tabSelect.options].some(option => option.value === id)) {
+          const option = document.createElement('option');
+          option.value = id;
+          option.textContent = data.title;
+          this.tabSelect.appendChild(option);
+        }
+        this.tabSelect.value = id;
+      }
+      document.dispatchEvent(new CustomEvent('tab-maker:tab-loaded', { detail: { tabId: id } }));
     } catch (error) {
       if (this.currentTabId !== id) return;
       this.currentTabId = null;
@@ -281,6 +303,7 @@ class TabRenderer {
       const section = this.renderSection(s);
       if (section) tabRoot.appendChild(section);
     });
+    this.syncUrl();
   }
 }
 
