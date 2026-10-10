@@ -177,6 +177,44 @@ const server = http.createServer((request, response) => {
       // Editing persists data and updates the rendered notation.
       await page.locator('#toggle-script').click();
       const editedScript = '[I] (1) Editor regression check';
+      const source = page.locator('#tab-script');
+      assert.ok(await source.evaluate(el => {
+        const context = document.createElement('canvas').getContext('2d');
+        const style = getComputedStyle(el);
+        context.font = `${style.fontSize} ${style.fontFamily}`;
+        return Math.abs(context.measureText('iiii').width - context.measureText('WWWW').width) < 0.01;
+      }), 'ASCII glyphs must have equal advances');
+      assert.equal(await page.locator('#undo-script svg').count(), 1);
+      assert.equal(await page.locator('#redo-script svg').count(), 1);
+      await source.fill('[I-Maj7](6-1)中文歌词,|()-[] <img src=x onerror=alert(1)>\n');
+      assert.equal(await page.locator('#script-highlight .syntax-chord').first().textContent(), '[I-Maj7]');
+      assert.equal(await page.locator('#script-highlight .syntax-pitch').first().textContent(), '(6-1)');
+      assert.equal(await page.locator('#script-highlight .syntax-separator').count(), 3);
+      assert.equal(await page.locator('#script-highlight img').count(), 0);
+      assert.notEqual(await page.locator('.syntax-chord').first().evaluate(el => getComputedStyle(el).color),
+        await page.locator('.syntax-pitch').first().evaluate(el => getComputedStyle(el).color));
+      // Separate native edit transactions, then undo/redo each without losing persistence.
+      await source.fill('[I](1)初始');
+      await source.press('End');
+      await source.press('A');
+      await source.press('ArrowLeft');
+      await source.press('ArrowRight');
+      await source.press('B');
+      await page.locator('#undo-script').click();
+      assert.equal(await source.inputValue(), '[I](1)初始A');
+      await source.press('Control+z');
+      assert.equal(await source.inputValue(), '[I](1)初始');
+      await source.press('Control+Shift+z');
+      assert.equal(await source.inputValue(), '[I](1)初始A');
+      await page.locator('#redo-script').click();
+      assert.equal(await source.inputValue(), '[I](1)初始AB');
+      assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('tab data')).tabScript), '[I](1)初始AB');
+      await source.fill(Array.from({ length: 60 }, () => '[I](1)中文歌词'.repeat(20)).join('\n'));
+      await source.evaluate(el => { el.scrollTop = 200; el.scrollLeft = 100; el.dispatchEvent(new Event('scroll')); });
+      assert.ok(await source.evaluate(el => {
+        const highlight = document.querySelector('#script-highlight');
+        return el.scrollTop === highlight.scrollTop && el.scrollLeft === highlight.scrollLeft;
+      }));
       await page.locator('#tab-script').fill(editedScript);
       await page.locator('#tab-script').dispatchEvent('change');
       assert.equal(await page.locator('tab-maker-block .lyrics').first().textContent(), 'Editor regression check');
@@ -190,7 +228,7 @@ const server = http.createServer((request, response) => {
         document.querySelector('.editor').remove();
         document.querySelector('#editor-splitter').remove();
         document.querySelector('.tabs-menu-header').remove();
-        const { TabRenderer } = await import('./modules/tab-renderer.js?v=pwa-11');
+        const { TabRenderer } = await import('./modules/tab-renderer.js?v=pwa-13');
         new TabRenderer().renderTab({
           title: 'Standalone renderer', originalKey: 'C', tabScript: '[I] (1) Independent rendering',
         }, 'D');

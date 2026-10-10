@@ -1,4 +1,4 @@
-import { TabController } from './modules/tab-controller.js?v=pwa-11';
+import { TabController } from './modules/tab-controller.js?v=pwa-13';
 
 function tabMakerMain() {
   const controller = new TabController();

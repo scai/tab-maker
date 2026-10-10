@@ -6,18 +6,24 @@ class TabEditor {
     this.onChange = onChange;
     this.showToast = showToast;
     this.tabScript = document.getElementById('tab-script');
-    this.tabScript.addEventListener('change', () => {
-      if (!this.tabData) return;
-      this.tabData = { ...this.tabData, tabScript: this.tabScript.value };
-      this.onChange(this.tabData);
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.tabData));
+    this.highlight = document.getElementById('script-highlight');
+    this.tabScript.addEventListener('input', (event) => {
+      this.highlightScript();
+      if (!event.isComposing) this.commitScript();
     });
-    // Preserve the existing live preview when a block or measure ends.
-    this.tabScript.addEventListener('keydown', (event) => {
-      if (this.tabData && (event.key === ',' || event.key === '|')) {
-        this.onChange({ ...this.tabData, tabScript: this.tabScript.value });
-      }
-    });
+    this.tabScript.addEventListener('compositionend', () => this.commitScript());
+    this.tabScript.addEventListener('change', () => this.commitScript());
+    this.tabScript.addEventListener('scroll', () => this.syncHighlightScroll());
+    for (const action of ['undo', 'redo']) {
+      const button = document.getElementById(`${action}-script`);
+      // Keep the text selection when clicking an editor history control.
+      button.addEventListener('mousedown', event => event.preventDefault());
+      button.addEventListener('click', () => {
+        this.tabScript.focus();
+        // Native history preserves typing groups, selections, paste and IME edits.
+        document.execCommand(action);
+      });
+    }
     document.getElementById('dump-tab-data').addEventListener('click', () => {
       if (!this.tabData) return;
       const dump = JSON.stringify(this.tabData);
@@ -29,9 +35,43 @@ class TabEditor {
     this.setupEditorSplitter();
   }
 
+  commitScript() {
+    if (!this.tabData) return;
+    if (this.tabData.tabScript === this.tabScript.value) return;
+    this.tabData = { ...this.tabData, tabScript: this.tabScript.value };
+    this.onChange(this.tabData);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.tabData));
+  }
+
+  highlightScript() {
+    const fragment = document.createDocumentFragment();
+    const tokens = /\[[^\]\n]*\]|\([^\)\n]*\)|[\[\],|()\-]/g;
+    const source = this.tabScript.value;
+    let offset = 0;
+    for (const match of source.matchAll(tokens)) {
+      fragment.append(document.createTextNode(source.slice(offset, match.index)));
+      const span = document.createElement('span');
+      span.className = match[0].startsWith('[') && match[0].endsWith(']') ? 'syntax-chord'
+        : match[0].startsWith('(') && match[0].endsWith(')') ? 'syntax-pitch' : 'syntax-separator';
+      span.textContent = match[0];
+      fragment.append(span);
+      offset = match.index + match[0].length;
+    }
+    // A trailing space gives the final empty line the same height as the textarea.
+    fragment.append(document.createTextNode(source.slice(offset) + ' '));
+    this.highlight.replaceChildren(fragment);
+    this.syncHighlightScroll();
+  }
+
+  syncHighlightScroll() {
+    this.highlight.scrollTop = this.tabScript.scrollTop;
+    this.highlight.scrollLeft = this.tabScript.scrollLeft;
+  }
+
   setTabData(tabData) {
     this.tabData = tabData;
     this.tabScript.value = tabData.tabScript;
+    this.highlightScript();
   }
 
   loadSavedTab() {
