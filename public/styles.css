@@ -1,7 +1,50 @@
+:root {
+  color-scheme: light;
+  --page: #f7f2e8;
+  --text: #30372f;
+  --muted: #596456;
+  --surface: #fffdf8;
+  --menu: rgba(245, 244, 241, 0.96);
+  --border: #c8cabc;
+  --hover: #eaece3;
+  --pressed: #dbe1d3;
+  --accent: #456747;
+  --accent-text: #ffffff;
+  --focus: #3478f6;
+  --splitter: #d2c5ac;
+  --splitter-hover: #8f7f61;
+  --shadow: rgba(24, 32, 24, 0.2);
+  --toast: #30372f;
+  --toast-text: #fffdf8;
+  --octave-filter: none;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #1c211e;
+  --text: #eceee4;
+  --muted: #b6c0b2;
+  --surface: #272e29;
+  --menu: rgba(36, 40, 36, 0.96);
+  --border: #667363;
+  --hover: #333e34;
+  --pressed: #435244;
+  --accent: #b0cf9e;
+  --accent-text: #1c211e;
+  --focus: #adc8ff;
+  --splitter: #414c42;
+  --splitter-hover: #829b78;
+  --shadow: rgba(0, 0, 0, 0.4);
+  --toast: #eceee4;
+  --toast-text: #1c211e;
+  --octave-filter: invert(1);
+}
+
 html {
+  background: var(--page);
   padding: 0;
   margin: 0;
-  color: #333;
+  color: var(--text);
   font-size: 25px;
   --main-font: 'Noto Sans SC', sans-serif;
   --menu-bar-height: 36px;
@@ -44,7 +87,7 @@ tab-maker-block {
 }
 
 tab-maker-measure {
-  border-right: solid 2px #999;
+  border-right: solid 2px var(--border);
   margin: .5em 0;
   padding: 0 .5em;
   display: inline-flex;
@@ -56,11 +99,11 @@ tab-maker-measure {
 }
 
 tab-maker-measure:first-of-type {
-  border-left: solid 2px #999;
+  border-left: solid 2px var(--border);
 }
 
 tab-maker-measure:hover {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: var(--hover);
 }
 
 .tab-info {
@@ -81,7 +124,7 @@ tab-maker-measure:hover {
 }
 
 #tab-root {
-  background-color: antiquewhite;
+  background-color: var(--page);
   overflow-y: scroll;
   padding: .25rem .5rem;
   min-width: 0;
@@ -105,14 +148,14 @@ tab-maker-measure:hover {
 button, input, select {
   font-family: var(--main-font);
   font-size: 1rem;
-  color: #333;
+  color: var(--text);
 }
 
 input, select, textarea {
-  border: silver solid 1px;
+  border: var(--border) solid 1px;
   border-radius: 0;
-  background-color: none;
-  color: #666;
+  background-color: var(--surface);
+  color: var(--muted);
   font-size: 1rem;
 }
 
@@ -133,7 +176,7 @@ input, select, textarea {
   grid-template-rows: minmax(0, 1fr);
   min-width: 0;
   overflow: hidden;
-  background: #fff;
+  background: var(--surface);
 }
 
 .root.editor-closed {
@@ -146,14 +189,14 @@ input, select, textarea {
 }
 
 #editor-splitter {
-  background: #d2c5ac;
+  background: var(--splitter);
   cursor: col-resize;
   transition: background 0.15s ease;
 }
 
 #editor-splitter:hover,
 body.resizing-editor #editor-splitter {
-  background: #8f7f61;
+  background: var(--splitter-hover);
 }
 
 body.resizing-editor {
@@ -174,16 +217,16 @@ body.resizing-editor {
   display: flex;
   gap: 2px;
   align-items: center;
-  background: rgba(245, 244, 241, 0.9);
+  background: var(--menu);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid var(--pressed);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .tabs-menu-toggle {
   background: transparent;
-  color: #222;
+  color: var(--text);
   padding: 4px 12px;
   border: none;
   border-radius: 4px;
@@ -202,7 +245,7 @@ body.resizing-editor {
   gap: 6px;
   flex-shrink: 0;
   margin-right: 8px;
-  color: #344538;
+  color: var(--accent);
   font-family: 'Fredoka', 'Noto Sans SC', sans-serif;
   font-size: 21px;
   font-weight: 600;
@@ -216,17 +259,17 @@ body.resizing-editor {
 }
 
 .tabs-menu-toggle:hover {
-  background-color: rgba(0, 0, 0, 0.08);
+  background-color: var(--hover);
 }
 
 .tabs-menu-toggle:active,
 .tabs-menu-toggle[aria-pressed="true"],
 .tabs-menu-header:has(.tabs-menu-dropdown.active) #tabs-menu-toggle {
-  background-color: rgba(0, 0, 0, 0.12);
+  background-color: var(--pressed);
 }
 
 .tabs-menu-toggle:focus-visible {
-  outline: 2px solid #3478f6;
+  outline: 2px solid var(--focus);
   outline-offset: -2px;
 }
 
@@ -240,10 +283,10 @@ body.resizing-editor {
   position: absolute;
   top: calc(100% + 4px);
   left: 8px;
-  background-color: rgba(250, 250, 250, 0.97);
-  border: 1px solid #ddd;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 16px 0 var(--shadow);
   min-width: 250px;
   max-height: 400px;
   overflow-y: auto;
@@ -259,14 +302,14 @@ body.resizing-editor {
   width: 100%;
   padding: 10px;
   border: none;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border);
   box-sizing: border-box;
   font-size: 16px;
 }
 
 .tabs-menu-search:focus {
   outline: none;
-  background-color: #f0f0f0;
+  background-color: var(--hover);
 }
 
 .tabs-menu-list {
@@ -278,18 +321,18 @@ body.resizing-editor {
 .tabs-menu-list li {
   padding: 10px 15px;
   cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--hover);
   transition: background-color 0.2s ease;
   font-size: 14px;
 }
 
 .tabs-menu-list li:hover {
-  background-color: #f0f0f0;
+  background-color: var(--hover);
 }
 
 .tabs-menu-list li.active {
-  background-color: #3478f6;
-  color: white;
+  background-color: var(--accent);
+  color: var(--accent-text);
 }
 
 .tabs-menu-list li:last-child {
@@ -304,8 +347,8 @@ body.resizing-editor {
   transform: translate(-50%, 0.5rem);
   padding: 0.45rem 0.8rem;
   border-radius: 4px;
-  background: rgba(51, 51, 51, 0.92);
-  color: white;
+  background: var(--toast);
+  color: var(--toast-text);
   font-size: 0.8rem;
   line-height: 1.2;
   opacity: 0;
@@ -346,7 +389,7 @@ body.resizing-editor {
   }
 
   .editor {
-    border-top: 1px solid #d2c5ac;
+    border-top: 1px solid var(--splitter);
   }
 
   .tabs-menu-toggle {
@@ -402,4 +445,9 @@ body.resizing-editor {
   .tabs-menu-brand span {
     display: none;
   }
+}
+
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
 }
