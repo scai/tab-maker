@@ -94,6 +94,34 @@ const server = http.createServer((request, response) => {
       await page.goto(origin + base);
       await page.waitForSelector('tab-maker-block');
       assert.equal(await page.locator('#tab-title').textContent(), '林俊杰 - 幸存者');
+      // Key labels and values must remain vertically centered beside the native select.
+      for (const width of [1280, 320]) {
+        await page.setViewportSize({ width, height: 844 });
+        const alignment = await page.locator('.tab-info ul').evaluate(list => {
+          const center = element => {
+            const rect = element.getBoundingClientRect();
+            return rect.top + rect.height / 2;
+          };
+          const original = list.querySelector('li:first-child label');
+          const transpose = list.querySelector('label[for="key-select"]');
+          return {
+            originalValue: Math.abs(center(original) - center(list.querySelector('#original-key'))),
+            selectLabel: Math.abs(center(transpose) - center(list.querySelector('#key-select'))),
+            labels: Math.abs(center(original) - center(transpose)),
+          };
+        });
+        assert.ok(alignment.originalValue <= 1, `Original key alignment at ${width}px: ${JSON.stringify(alignment)}`);
+        assert.ok(alignment.selectLabel <= 1, `Transpose alignment at ${width}px: ${JSON.stringify(alignment)}`);
+        if (width === 1280) assert.ok(alignment.labels <= 1, `Key row alignment: ${JSON.stringify(alignment)}`);
+        if (process.env.THEME_SCREENSHOT_DIR && base === '/') {
+          for (const theme of ['light', 'dark']) {
+            await page.emulateMedia({ colorScheme: theme });
+            await page.locator('.tab-info').screenshot({ path: path.join(process.env.THEME_SCREENSHOT_DIR, `key-info-${theme}-${width}.png`) });
+          }
+        }
+      }
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.emulateMedia({ colorScheme: 'light' });
       await page.waitForFunction(() => !!navigator.serviceWorker.controller);
       const cdp = await context.newCDPSession(page);
       const appManifest = await cdp.send('Page.getAppManifest');
