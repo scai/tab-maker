@@ -50,7 +50,51 @@ const server = http.createServer((request, response) => {
       // Prove no essential functionality needs the external fonts or a CDN.
       await page.route('https://**', route => route.abort());
       await page.goto(origin + base);
-      await page.waitForSelector('tab-maker-chord-diagram');
+      await page.waitForSelector('#landing-songs button');
+      assert.equal(await page.locator('.landing').isVisible(), true);
+      assert.equal(await page.locator('#toggle-script').isDisabled(), true);
+      for (const theme of ['light', 'dark']) {
+        await page.emulateMedia({ colorScheme: theme });
+        await page.waitForFunction(value => document.documentElement.dataset.theme === value, theme);
+        assert.equal(await page.locator('.landing').evaluate(el => getComputedStyle(el).color),
+          theme === 'dark' ? 'rgb(236, 238, 228)' : 'rgb(48, 55, 47)');
+        for (const width of [320, 1280]) {
+          await page.setViewportSize({ width, height: 844 });
+          assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+          if (process.env.THEME_SCREENSHOT_DIR && base === '/') {
+            await page.screenshot({ path: path.join(process.env.THEME_SCREENSHOT_DIR, `landing-${theme}-${width}.png`) });
+          }
+        }
+      }
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.emulateMedia({ colorScheme: 'light' });
+      await page.locator('#landing-search').fill('no matching song');
+      assert.equal(await page.locator('#landing-songs button').count(), 0);
+      await page.locator('#landing-search').fill('林俊杰');
+      assert.equal(await page.locator('#landing-songs button').count(), 1);
+      await page.locator('#landing-songs button').click();
+      await page.waitForFunction(() => !document.querySelector('.root').classList.contains('landing-active'));
+      assert.equal(await page.locator('.landing').isVisible(), false);
+      await page.locator('#toggle-script').click();
+      await page.locator('#tabs-menu-toggle').click();
+      const savedBeforeHome = await page.evaluate(() => localStorage.getItem('tab-maker-last-tab'));
+      await page.locator('#go-home').click();
+      assert.equal(await page.locator('.landing').isVisible(), true);
+      assert.equal(await page.locator('.editor').isVisible(), false);
+      assert.equal(await page.locator('#tabs-menu-dropdown').isVisible(), false);
+      assert.equal(await page.locator('#toggle-script').isDisabled(), true);
+      assert.equal(await page.locator('#landing-search').inputValue(), '');
+      assert.equal(new URL(page.url()).searchParams.has('tab'), false);
+      assert.equal(await page.evaluate(() => localStorage.getItem('tab-maker-last-tab')), savedBeforeHome);
+      await page.locator('#landing-search').fill('林俊杰');
+      await page.locator('#landing-songs button').click();
+      assert.equal(await page.locator('.landing').isVisible(), false);
+      await page.locator('#go-home').focus();
+      await page.locator('#go-home').press('Enter');
+      assert.equal(await page.locator('.landing').isVisible(), true);
+      await page.goto(origin + base);
+      await page.waitForSelector('tab-maker-block');
+      assert.equal(await page.locator('#tab-title').textContent(), '林俊杰 - 幸存者');
       await page.waitForFunction(() => !!navigator.serviceWorker.controller);
       const cdp = await context.newCDPSession(page);
       const appManifest = await cdp.send('Page.getAppManifest');
@@ -279,7 +323,7 @@ const server = http.createServer((request, response) => {
       assert.equal(await page.locator('tab-maker-block .lyrics').first().textContent(), 'Editor regression check');
       assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('tab data')).tabScript), editedScript);
       await page.goto(origin + base);
-      await page.waitForFunction(() => document.querySelector('#tab-title').textContent.includes('(from Local Storage)'));
+      await page.waitForSelector('tab-maker-chord-diagram');
       assert.equal(await page.locator('#tab-script').inputValue(), editedScript);
 
       // Rendering also works without the editor or its controls in the DOM.

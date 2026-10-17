@@ -10,13 +10,16 @@ class TabsMenuManager {
     this.searchInput = document.getElementById('tabs-menu-search');
     this.allTabs = [];
     const url = new URL(location);
-    this.currentTab = url.searchParams.get('tab') || 'test';
+    this.currentTab = url.searchParams.get('tab');
+    this.landingSearch = document.getElementById('landing-search');
+    this.landingSongs = document.getElementById('landing-songs');
 
     this.setupEventListeners();
     this.loadTabsList();
   }
 
   setupEventListeners() {
+    this.landingSearch.addEventListener('input', () => this.renderLanding());
     document.addEventListener('tab-maker:tab-loaded', (event) => {
       this.currentTab = event.detail.tabId;
       this.filterTabs(this.searchInput.value.toLowerCase());
@@ -58,11 +61,47 @@ class TabsMenuManager {
       const data = await response.json();
       this.allTabs = data.tabs;
       this.renderTabs(this.allTabs);
+      this.renderLanding();
     } catch (error) {
       console.error('Failed to load tabs manifest:', error);
       // Fallback if manifest fails
       this.allTabs = [];
+      this.landingSongs.textContent = '曲库加载失败，请刷新重试。';
     }
+  }
+
+  renderLanding() {
+    const query = this.landingSearch.value.trim().toLowerCase();
+    const tabs = this.allTabs.filter(tab =>
+      `${this.getTabId(tab)} ${this.getTabTitle(tab)}`.toLowerCase().includes(query));
+    document.getElementById('landing-count').textContent = `${tabs.length} 首`;
+    this.landingSongs.replaceChildren();
+    if (!tabs.length) {
+      const empty = document.createElement('li');
+      empty.textContent = '没有找到歌曲，试试歌手名。';
+      this.landingSongs.append(empty);
+    }
+    tabs.forEach(tab => {
+      const item = document.createElement('li');
+      const button = document.createElement('button');
+      button.type = 'button';
+      const parts = this.getTabTitle(tab).split(' - ');
+      const artist = parts.length > 1 ? parts.shift() : '';
+      const title = document.createElement('span');
+      title.textContent = parts.join(' - ');
+      const artistLabel = document.createElement('small');
+      artistLabel.textContent = artist;
+      if (artist) title.append(artistLabel);
+      const arrow = document.createElement('span');
+      arrow.textContent = '→';
+      arrow.setAttribute('aria-hidden', 'true');
+      button.append(title, arrow);
+      button.addEventListener('click', () => {
+        this.selectTab(this.getTabId(tab));
+      });
+      item.append(button);
+      this.landingSongs.append(item);
+    });
   }
 
   renderTabs(tabs) {
@@ -131,7 +170,6 @@ class TabsMenuManager {
         tabSelect.appendChild(option);
       }
       tabSelect.value = tabId;
-      tabSelect.dispatchEvent(new Event('change', { bubbles: true }));
     }
     document.dispatchEvent(new CustomEvent('tab-maker:select-tab', {
       detail: { tabId },

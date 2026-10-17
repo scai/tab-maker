@@ -8,7 +8,7 @@ function tabMakerMain() {
   if (deepLinkTab) {
     controller.openTab(deepLinkTab);
   } else {
-    controller.openLocalStorageTab() || controller.openTab('test');
+    controller.openLastTab() || controller.openLocalStorageTab();
   }
 }
 
