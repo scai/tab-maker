@@ -159,7 +159,9 @@ const server = http.createServer((request, response) => {
       for (const viewport of [{width:320,height:844}, {width:390,height:844},
         {width:665,height:884}, {width:844,height:390}]) {
         await page.setViewportSize(viewport);
-        for (const id of ['decrease-tab-size', 'increase-tab-size', 'dump-tab-data', 'toggle-theme']) {
+        assert.ok(await page.locator('#dump-tab-data').isHidden());
+        assert.equal(await page.locator('.tabs-menu-header #dump-tab-data').count(), 0);
+        for (const id of ['decrease-tab-size', 'increase-tab-size', 'toggle-theme']) {
           assert.ok(await page.locator(`#${id}`).evaluate(button => {
             const rect = button.getBoundingClientRect();
             const menu = button.closest('nav').getBoundingClientRect();
@@ -171,6 +173,13 @@ const server = http.createServer((request, response) => {
           button.getBoundingClientRect().right <= innerWidth));
         await page.locator('#toggle-script').click();
         assert.ok(await page.locator('#tab-script').isVisible());
+        assert.ok(await page.locator('.editor-toolbar #dump-tab-data').isVisible());
+        assert.ok(await page.locator('#dump-tab-data').evaluate(button => {
+          const rect = button.getBoundingClientRect();
+          const toolbar = button.closest('.editor-toolbar').getBoundingClientRect();
+          return rect.left >= toolbar.left && rect.right <= toolbar.right &&
+            rect.top >= toolbar.top && rect.bottom <= toolbar.bottom;
+        }));
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
         await page.locator('#toggle-script').click();
       }
