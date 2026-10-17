@@ -28,10 +28,6 @@ class TabController {
     document.addEventListener('tab-maker:select-tab', (event) => {
       this.openTab(event.detail.tabId);
     });
-    this.tabSelect = document.getElementById('tab-select');
-    if (this.tabSelect) {
-      this.tabSelect.addEventListener('change', () => this.openTab(this.tabSelect.value));
-    }
 
     const showPitch = new URL(location).searchParams.get('nn') === '1';
     document.body.classList.toggle('show-pitch', showPitch);
@@ -98,15 +94,6 @@ class TabController {
       this.tabData = data;
       this.editor.setTabData(data);
       this.renderTab();
-      if (this.tabSelect) {
-        if (![...this.tabSelect.options].some(option => option.value === id)) {
-          const option = document.createElement('option');
-          option.value = id;
-          option.textContent = data.title;
-          this.tabSelect.appendChild(option);
-        }
-        this.tabSelect.value = id;
-      }
       document.dispatchEvent(new CustomEvent('tab-maker:tab-loaded', { detail: { tabId: id } }));
     } catch (error) {
       if (this.tabRequest !== request) return;
@@ -127,7 +114,6 @@ class TabController {
     for (const id of ['toggle-script', 'toggle-pitch', 'decrease-tab-size', 'increase-tab-size']) {
       document.getElementById(id).disabled = true;
     }
-    document.getElementById('tabs-menu-dropdown').classList.remove('active');
     const url = new URL(location);
     for (const name of ['tab', 'key', 'nn']) url.searchParams.delete(name);
     history.replaceState(history.state, '', url);

@@ -76,12 +76,11 @@ const server = http.createServer((request, response) => {
       await page.waitForFunction(() => !document.querySelector('.root').classList.contains('landing-active'));
       assert.equal(await page.locator('.landing').isVisible(), false);
       await page.locator('#toggle-script').click();
-      await page.locator('#tabs-menu-toggle').click();
       const savedBeforeHome = await page.evaluate(() => localStorage.getItem('tab-maker-last-tab'));
       await page.locator('#go-home').click();
       assert.equal(await page.locator('.landing').isVisible(), true);
       assert.equal(await page.locator('.editor').isVisible(), false);
-      assert.equal(await page.locator('#tabs-menu-dropdown').isVisible(), false);
+      assert.equal(await page.locator('#tabs-menu-toggle, #tabs-menu-dropdown').count(), 0);
       assert.equal(await page.locator('#toggle-script').isDisabled(), true);
       assert.equal(await page.locator('#landing-search').inputValue(), '');
       assert.equal(new URL(page.url()).searchParams.has('tab'), false);
@@ -185,15 +184,17 @@ const server = http.createServer((request, response) => {
       assert.equal(await page.locator('#key-select').inputValue(), 'D');
       assert.equal(await page.locator('#toggle-pitch').getAttribute('aria-pressed'), 'true');
       for (const song of songs) {
-        await page.locator('#tabs-menu-toggle').click();
+        await page.locator('#go-home').click();
+        assert.equal(await page.locator('#landing-songs button').count(), songs.length);
+        assert.deepEqual(await page.locator('#landing-songs button').evaluateAll(buttons => buttons.map(b => b.dataset.tab)),
+          songs.map(tab => tab.id));
         await page.locator(`[data-tab="${song.id}"]`).click();
         await page.waitForFunction(title => document.querySelector('#tab-title').textContent === title,
           JSON.parse(fs.readFileSync(path.join(publicDir, `tabs/${song.id}.json`))).title);
+        await page.locator('#key-select').selectOption('D');
         assert.equal(new URL(page.url()).searchParams.get('tab'), song.id);
         assert.equal(new URL(page.url()).searchParams.get('key'), 'D');
         assert.equal(new URL(page.url()).searchParams.get('nn'), '1');
-        assert.equal(await page.locator('#tab-select').inputValue(), song.id);
-        assert.equal(await page.locator('#tabs-menu-list li.active').getAttribute('data-tab'), song.id);
         const originalKey = JSON.parse(fs.readFileSync(path.join(publicDir, `tabs/${song.id}.json`))).originalKey;
         const chromaticKeys = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
         const expectedCapo = (chromaticKeys.indexOf(originalKey === 'G#' ? 'Ab' : originalKey) - 2 + 12) % 12;

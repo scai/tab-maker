@@ -463,8 +463,7 @@ body.resizing-editor {
 }
 
 .tabs-menu-toggle:active,
-.tabs-menu-toggle[aria-pressed="true"],
-.tabs-menu-header:has(.tabs-menu-dropdown.active) #tabs-menu-toggle {
+.tabs-menu-toggle[aria-pressed="true"] {
   background-color: var(--pressed);
 }
 
@@ -477,66 +476,6 @@ body.resizing-editor {
   opacity: 0.4;
   cursor: default;
   background: transparent;
-}
-
-.tabs-menu-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 8px;
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 8px 16px 0 var(--shadow);
-  min-width: 250px;
-  max-height: 400px;
-  overflow-y: auto;
-  z-index: 999;
-  display: none;
-}
-
-.tabs-menu-dropdown.active {
-  display: block;
-}
-
-.tabs-menu-search {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-bottom: 1px solid var(--border);
-  box-sizing: border-box;
-  font-size: 16px;
-}
-
-.tabs-menu-search:focus {
-  outline: none;
-  background-color: var(--hover);
-}
-
-.tabs-menu-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.tabs-menu-list li {
-  padding: 10px 15px;
-  cursor: pointer;
-  border-bottom: 1px solid var(--hover);
-  transition: background-color 0.2s ease;
-  font-size: 14px;
-}
-
-.tabs-menu-list li:hover {
-  background-color: var(--hover);
-}
-
-.tabs-menu-list li.active {
-  background-color: var(--accent);
-  color: var(--accent-text);
-}
-
-.tabs-menu-list li:last-child {
-  border-bottom: none;
 }
 
 .toast {
@@ -569,8 +508,7 @@ body.resizing-editor {
   }
 
   /* Keep text fields readable and avoid automatic zoom when focused on phones. */
-  input, select, textarea,
-  .tabs-menu-search {
+  input, select, textarea {
     font-size: 16px;
   }
 
@@ -611,14 +549,7 @@ body.resizing-editor {
     height: 26px;
   }
 
-  .tabs-menu-dropdown {
-    top: calc(100% + 6px);
-    min-width: 0;
-    width: min(320px, calc(100% - 16px));
-    max-height: 60vh;
-  }
-
-  .tab-info {
+.tab-info {
     margin: .25rem;
     padding-top: 8px;
   }
