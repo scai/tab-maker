@@ -5,6 +5,34 @@ const path = require('node:path');
 const http = require('node:http');
 const { chromium } = require('playwright');
 
+async function checkMeasureLayout(page) {
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  const problems = await page.locator('#tab-body').evaluate(root => {
+    const issues = [];
+    const outer = root.getBoundingClientRect();
+    root.querySelectorAll('.tab-verse').forEach(verse => {
+      const columns = Number(verse.dataset.columns);
+      const starts = [];
+      const ends = [];
+      verse.querySelectorAll('.tab-line').forEach(line => {
+        [...line.children].forEach((measure, index) => {
+          const rect = measure.getBoundingClientRect();
+          const col = index % columns;
+          if (starts[col] === undefined) { starts[col] = rect.left; ends[col] = rect.right; }
+          if (Math.abs(starts[col] - rect.left) > 1 || Math.abs(ends[col] - rect.right) > 1) issues.push('Unaligned measure');
+          if (rect.left < outer.left - 1 || rect.right > outer.right + 1) issues.push('Measure outside reader');
+          for (const block of measure.children) {
+            const b = block.getBoundingClientRect();
+            if (b.left < rect.left - 1 || b.right > rect.right + 1) issues.push('Block outside measure');
+          }
+        });
+      });
+    });
+    return issues;
+  });
+  assert.deepEqual(problems, []);
+}
+
 const publicDir = path.resolve(__dirname, '../public');
 const manifest = JSON.parse(fs.readFileSync(path.join(publicDir, 'manifest.webmanifest')));
 assert.equal(manifest.orientation, 'any');
@@ -224,6 +252,7 @@ const server = http.createServer((request, response) => {
         assert.equal(new URL(page.url()).searchParams.get('key'), 'D');
         assert.equal(new URL(page.url()).searchParams.get('nn'), '1');
         const originalKey = JSON.parse(fs.readFileSync(path.join(publicDir, `tabs/${song.id}.json`))).originalKey;
+        await checkMeasureLayout(page);
         const chromaticKeys = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
         const expectedCapo = (chromaticKeys.indexOf(originalKey === 'G#' ? 'Ab' : originalKey) - 2 + 12) % 12;
         assert.equal(await page.locator('#capo-position').textContent(), expectedCapo === 0
@@ -246,6 +275,7 @@ const server = http.createServer((request, response) => {
           button.getBoundingClientRect().right <= innerWidth));
         await page.locator('#toggle-script').click();
         assert.ok(await page.locator('#tab-script').isVisible());
+        await checkMeasureLayout(page);
         assert.ok(await page.locator('.editor-toolbar #dump-tab-data').isVisible());
         assert.ok(await page.locator('#dump-tab-data').evaluate(button => {
           const rect = button.getBoundingClientRect();
@@ -368,6 +398,22 @@ const server = http.createServer((request, response) => {
       assert.equal(await page.locator('#tab-title').textContent(), 'Standalone renderer');
       assert.equal(await page.locator('tab-maker-block').first().getAttribute('chord'), 'D');
       assert.equal(await page.locator('tab-maker-block .lyrics').first().textContent(), 'Independent rendering');
+      // Shared columns align short/long measures without joining source lines.
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await page.evaluate(async () => {
+        const { TabRenderer } = await import('./modules/tab-renderer.js?v=pwa-14');
+        const renderer = new TabRenderer();
+        renderer.renderTab({ title: 'Measure grid', originalKey: 'C', tabScript:
+          '[I]一|[V]较长的歌词|[vi]三|[IV]四\n[I]第一小节较长|[V]二|[vi]三|[IV]四\n[I]短行|[V]二\n\n[I]新段|[V]二\n没有小节线的纯歌词' }, 'C');
+      });
+      assert.equal(await page.locator('.tab-verse').count(), 2);
+      assert.equal(await page.locator('.tab-line').count(), 4);
+      assert.equal(await page.locator('.tab-lyrics').count(), 1);
+      for (const width of [1280, 665, 320]) {
+        await page.setViewportSize({ width, height: 900 });
+        await checkMeasureLayout(page);
+        assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      }
       assert.deepEqual(errors, []);
       console.log(`PASS ${base}: manifest, icons, offline reload, all ${songs.length} songs, diagrams, transposition, text size, pitch, portrait/landscape editor`);
       await context.close();
