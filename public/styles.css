@@ -288,6 +288,70 @@ input, select, textarea {
   font-size: 1rem;
 }
 
+.landing {
+  display: none;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  padding: 48px 24px 32px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.landing-active .landing { display: block; }
+.landing-active .tab-info,
+.landing-active #tab-body { display: none; }
+.landing h1 { font-size: 28px; font-weight: 500; margin: 0 0 10px; }
+.landing p { font-size: 14px; color: var(--muted); margin: 0 0 25px; }
+.landing-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  margin-bottom: 25px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--muted);
+}
+.landing-search > span { font-size: 24px; }
+.landing-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  padding: 13px 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+}
+.landing-search input::placeholder { color: var(--muted); opacity: 1; }
+.landing-list-heading { display: flex; justify-content: space-between; padding-bottom: 10px; font-size: 12px; color: var(--muted); }
+.landing-songs { margin: 0; padding: 0; list-style: none; }
+.landing-songs button {
+  width: 100%;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 4px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.landing-songs button:hover { background: var(--hover); }
+.landing-songs button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.landing-songs small { display: block; font-size: 12px; color: var(--muted); margin-top: 5px; }
+.landing-songs button > span:last-child { color: var(--accent); }
+@media (max-width: 768px) {
+  .landing { padding: 32px 12px 24px; }
+  .landing h1 { font-size: 25px; }
+}
+
 .root {
   --editor-width: 38vw;
   position: absolute;
@@ -369,6 +433,10 @@ body.resizing-editor {
 }
 
 .tabs-menu-brand {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -382,6 +450,9 @@ body.resizing-editor {
   white-space: nowrap;
 }
 
+.tabs-menu-brand:hover { background: var(--hover); }
+.tabs-menu-brand:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
 .tabs-menu-brand img {
   display: block;
   object-fit: contain;
@@ -392,8 +463,7 @@ body.resizing-editor {
 }
 
 .tabs-menu-toggle:active,
-.tabs-menu-toggle[aria-pressed="true"],
-.tabs-menu-header:has(.tabs-menu-dropdown.active) #tabs-menu-toggle {
+.tabs-menu-toggle[aria-pressed="true"] {
   background-color: var(--pressed);
 }
 
@@ -406,66 +476,6 @@ body.resizing-editor {
   opacity: 0.4;
   cursor: default;
   background: transparent;
-}
-
-.tabs-menu-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 8px;
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 8px 16px 0 var(--shadow);
-  min-width: 250px;
-  max-height: 400px;
-  overflow-y: auto;
-  z-index: 999;
-  display: none;
-}
-
-.tabs-menu-dropdown.active {
-  display: block;
-}
-
-.tabs-menu-search {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-bottom: 1px solid var(--border);
-  box-sizing: border-box;
-  font-size: 16px;
-}
-
-.tabs-menu-search:focus {
-  outline: none;
-  background-color: var(--hover);
-}
-
-.tabs-menu-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.tabs-menu-list li {
-  padding: 10px 15px;
-  cursor: pointer;
-  border-bottom: 1px solid var(--hover);
-  transition: background-color 0.2s ease;
-  font-size: 14px;
-}
-
-.tabs-menu-list li:hover {
-  background-color: var(--hover);
-}
-
-.tabs-menu-list li.active {
-  background-color: var(--accent);
-  color: var(--accent-text);
-}
-
-.tabs-menu-list li:last-child {
-  border-bottom: none;
 }
 
 .toast {
@@ -498,8 +508,7 @@ body.resizing-editor {
   }
 
   /* Keep text fields readable and avoid automatic zoom when focused on phones. */
-  input, select, textarea,
-  .tabs-menu-search {
+  input, select, textarea {
     font-size: 16px;
   }
 
@@ -527,6 +536,9 @@ body.resizing-editor {
   }
 
   .tabs-menu-brand {
+    min-height: 44px;
+    min-width: 44px;
+    justify-content: center;
     gap: 4px;
     margin-right: 4px;
     font-size: 18px;
@@ -537,14 +549,7 @@ body.resizing-editor {
     height: 26px;
   }
 
-  .tabs-menu-dropdown {
-    top: calc(100% + 6px);
-    min-width: 0;
-    width: min(320px, calc(100% - 16px));
-    max-height: 60vh;
-  }
-
-  .tab-info {
+.tab-info {
     margin: .25rem;
     padding-top: 8px;
   }

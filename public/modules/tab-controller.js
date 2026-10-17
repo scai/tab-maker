@@ -28,10 +28,6 @@ class TabController {
     document.addEventListener('tab-maker:select-tab', (event) => {
       this.openTab(event.detail.tabId);
     });
-    this.tabSelect = document.getElementById('tab-select');
-    if (this.tabSelect) {
-      this.tabSelect.addEventListener('change', () => this.openTab(this.tabSelect.value));
-    }
 
     const showPitch = new URL(location).searchParams.get('nn') === '1';
     document.body.classList.toggle('show-pitch', showPitch);
@@ -42,6 +38,9 @@ class TabController {
       this.syncUrl();
     });
     this.setupTabSizeControls();
+    document.getElementById('go-home').addEventListener('click', () => this.showLanding());
+    document.getElementById('decrease-tab-size').disabled = true;
+    document.getElementById('increase-tab-size').disabled = true;
   }
 
   syncUrl() {
@@ -80,36 +79,74 @@ class TabController {
 
   async openTab(id) {
     if (this.currentTabId === id) {
+      if (this.tabData && this.loadedTabId === id) this.renderTab();
       return;
     }
+    const request = this.tabRequest = (this.tabRequest || 0) + 1;
     this.currentTabId = id;
+    document.getElementById('landing-search').disabled = true;
     try {
       const response = await fetch(`./tabs/${id}.json`);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      if (this.currentTabId !== id) return;
+      if (this.tabRequest !== request) return;
+      this.loadedTabId = id;
       this.tabData = data;
       this.editor.setTabData(data);
       this.renderTab();
-      if (this.tabSelect) {
-        if (![...this.tabSelect.options].some(option => option.value === id)) {
-          const option = document.createElement('option');
-          option.value = id;
-          option.textContent = data.title;
-          this.tabSelect.appendChild(option);
-        }
-        this.tabSelect.value = id;
-      }
       document.dispatchEvent(new CustomEvent('tab-maker:tab-loaded', { detail: { tabId: id } }));
     } catch (error) {
-      if (this.currentTabId !== id) return;
+      if (this.tabRequest !== request) return;
       this.currentTabId = null;
+      document.getElementById('landing-search').disabled = false;
       this.showToast('failed to load ' + id);
     }
   }
 
+  showLanding() {
+    // Cancel an outstanding selection without discarding the last loaded song.
+    this.tabRequest = (this.tabRequest || 0) + 1;
+    this.currentTabId = this.loadedTabId || null;
+    const root = document.querySelector('.root');
+    root.classList.add('landing-active', 'editor-closed');
+    this.editor.closeSuggestions();
+    document.getElementById('toggle-script').setAttribute('aria-pressed', 'false');
+    for (const id of ['toggle-script', 'toggle-pitch', 'decrease-tab-size', 'increase-tab-size']) {
+      document.getElementById(id).disabled = true;
+    }
+    const url = new URL(location);
+    for (const name of ['tab', 'key', 'nn']) url.searchParams.delete(name);
+    history.replaceState(history.state, '', url);
+    const search = document.getElementById('landing-search');
+    search.disabled = false;
+    search.value = '';
+    search.dispatchEvent(new Event('input'));
+    document.getElementById('tab-root').scrollTop = 0;
+    search.focus({ preventScroll: true });
+  }
+
+  openLastTab() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('tab-maker-last-tab'));
+      if (!saved || typeof saved.data?.title !== 'string' ||
+          typeof saved.data.tabScript !== 'string' || !TRANSPOSE_MAP.has(saved.data.originalKey)) return false;
+      this.currentTabId = typeof saved.id === 'string' ? saved.id : null;
+      this.loadedTabId = this.currentTabId;
+      this.tabData = saved.data;
+      this.editor.setTabData(this.tabData);
+      this.renderTab();
+      document.dispatchEvent(new CustomEvent('tab-maker:tab-loaded', {
+        detail: { tabId: this.currentTabId },
+      }));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   openLocalStorageTab() {
-    const data = this.editor.loadSavedTab();
+    let data;
+    try { data = this.editor.loadSavedTab(); } catch { return false; }
     if (!data) return false;
     this.tabData = data;
     this.editor.setTabData(data);
@@ -119,6 +156,13 @@ class TabController {
 
   renderTab() {
     if (!this.tabData) return;
+    document.querySelector('.root').classList.remove('landing-active');
+    document.getElementById('landing-search').disabled = false;
+    document.getElementById('toggle-script').disabled = false;
+    document.getElementById('toggle-pitch').disabled = false;
+    const scale = Number.parseFloat(document.getElementById('tab-body').style.getPropertyValue('--tab-text-scale')) || 1;
+    document.getElementById('decrease-tab-size').disabled = scale <= 0.5;
+    document.getElementById('increase-tab-size').disabled = scale >= 2;
     // Key selected from dropdown >> deep-link key >> original key
     if (!this.isKeySelected) {
       const url = new URL(location);
@@ -135,6 +179,11 @@ class TabController {
     document.getElementById('capo-position').textContent = capoFret === null ? ''
       : capoFret === 0 ? '变调夹：无需（0 品）' : `变调夹：第 ${capoFret} 品`;
     this.syncUrl();
+    try {
+      localStorage.setItem('tab-maker-last-tab', JSON.stringify({ id: this.currentTabId, data: this.tabData }));
+    } catch {
+      // Reading and editing still work when persistence is unavailable.
+    }
   }
 }
 

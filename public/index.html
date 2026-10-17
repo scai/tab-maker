@@ -16,7 +16,7 @@
   <script src="vendor/svg.min.js"></script>
   <script src="pwa.js" defer></script>
   <script src="tab-maker.js?v=pwa-14" type="module"></script>
-  <script src="modules/tabs-menu.js" type="module"></script>
+  <script src="modules/landing.js" type="module"></script>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;300;400;700&display=swap" rel="stylesheet">
@@ -24,24 +24,29 @@
 </head>
 
 <body>
-  <div class="root editor-closed">
+  <div class="root editor-closed landing-active">
     <nav class="tabs-menu-header" aria-label="主菜单">
-      <div class="tabs-menu-brand">
+      <button class="tabs-menu-brand" id="go-home" type="button" aria-label="返回选曲首页">
         <img src="assets/logo.png" width="30" height="30" alt="">
         <span>tab maker</span>
-      </div>
-      <button class="tabs-menu-toggle" id="tabs-menu-toggle">选曲</button>
-      <button class="tabs-menu-toggle" id="toggle-script" aria-pressed="false">编辑器</button>
-      <button class="tabs-menu-toggle" id="toggle-pitch" aria-pressed="false">显示音高</button>
-      <button class="tabs-menu-toggle" id="decrease-tab-size" type="button" aria-label="缩小谱面文字" title="缩小谱面文字">−</button>
-      <button class="tabs-menu-toggle" id="increase-tab-size" type="button" aria-label="放大谱面文字" title="放大谱面文字">+</button>
+      </button>
+      <button class="tabs-menu-toggle" id="toggle-script" aria-pressed="false" disabled>编辑器</button>
+      <button class="tabs-menu-toggle" id="toggle-pitch" aria-pressed="false" disabled>显示音高</button>
+      <button class="tabs-menu-toggle" id="decrease-tab-size" type="button" aria-label="缩小谱面文字" title="缩小谱面文字" disabled>−</button>
+      <button class="tabs-menu-toggle" id="increase-tab-size" type="button" aria-label="放大谱面文字" title="放大谱面文字" disabled>+</button>
       <button class="tabs-menu-toggle" id="toggle-theme" type="button" aria-label="深色模式" aria-pressed="false">浅色模式</button>
-      <div class="tabs-menu-dropdown" id="tabs-menu-dropdown">
-        <input type="text" class="tabs-menu-search" id="tabs-menu-search" placeholder="Search tabs...">
-        <ul class="tabs-menu-list" id="tabs-menu-list"></ul>
-      </div>
     </nav>
     <div id="tab-root">
+      <main class="landing" aria-labelledby="landing-title">
+        <h1 id="landing-title">选一首，开始弹</h1>
+        <p>搜索歌曲或歌手，打开曲谱。</p>
+        <label class="landing-search">
+          <span aria-hidden="true">⌕</span>
+          <input id="landing-search" type="search" aria-label="搜索歌曲或歌手" placeholder="搜索歌曲或歌手…" autocomplete="off">
+        </label>
+        <div class="landing-list-heading"><span>所有曲谱</span><span id="landing-count" aria-live="polite"></span></div>
+        <ul id="landing-songs" class="landing-songs" aria-label="曲谱"><li role="status">正在加载曲库…</li></ul>
+      </main>
       <div class="tab-info">
         <h1 id="tab-title"></h1>
         <ul>
@@ -61,7 +66,6 @@
     </div>
     <div id="editor-splitter" role="separator" aria-orientation="vertical" aria-label="Resize editor"></div>
     <div class="editor">
-      <select id="tab-select" hidden aria-hidden="true" tabindex="-1"></select>
       <div class="editor-toolbar" role="toolbar" aria-label="谱面编辑工具">
         <button id="split-lyrics" type="button" title="将选中的歌词拆成单字并添加 (0) 音高占位符">拆分歌词</button>
         <button id="undo-script" type="button" aria-label="撤销" title="撤销 (Ctrl/Cmd+Z)">
