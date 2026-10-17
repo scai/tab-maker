@@ -159,7 +159,9 @@ const server = http.createServer((request, response) => {
       for (const viewport of [{width:320,height:844}, {width:390,height:844},
         {width:665,height:884}, {width:844,height:390}]) {
         await page.setViewportSize(viewport);
-        for (const id of ['decrease-tab-size', 'increase-tab-size', 'dump-tab-data', 'toggle-theme']) {
+        assert.ok(await page.locator('#dump-tab-data').isHidden());
+        assert.equal(await page.locator('.tabs-menu-header #dump-tab-data').count(), 0);
+        for (const id of ['decrease-tab-size', 'increase-tab-size', 'toggle-theme']) {
           assert.ok(await page.locator(`#${id}`).evaluate(button => {
             const rect = button.getBoundingClientRect();
             const menu = button.closest('nav').getBoundingClientRect();
@@ -171,6 +173,13 @@ const server = http.createServer((request, response) => {
           button.getBoundingClientRect().right <= innerWidth));
         await page.locator('#toggle-script').click();
         assert.ok(await page.locator('#tab-script').isVisible());
+        assert.ok(await page.locator('.editor-toolbar #dump-tab-data').isVisible());
+        assert.ok(await page.locator('#dump-tab-data').evaluate(button => {
+          const rect = button.getBoundingClientRect();
+          const toolbar = button.closest('.editor-toolbar').getBoundingClientRect();
+          return rect.left >= toolbar.left && rect.right <= toolbar.right &&
+            rect.top >= toolbar.top && rect.bottom <= toolbar.bottom;
+        }));
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
         await page.locator('#toggle-script').click();
       }
@@ -178,6 +187,34 @@ const server = http.createServer((request, response) => {
       await page.locator('#toggle-script').click();
       const editedScript = '[I] (1) Editor regression check';
       const source = page.locator('#tab-script');
+      await source.fill('');
+      await source.press('[');
+      assert.equal(await source.inputValue(), '[]');
+      assert.equal(await source.evaluate(el => el.selectionStart), 1);
+      await page.locator('#undo-script').click();
+      assert.equal(await source.inputValue(), '');
+      await source.press('(');
+      assert.equal(await source.inputValue(), '()');
+      assert.equal(await source.evaluate(el => el.selectionStart), 1);
+      await source.fill('');
+      await source.pressSequentially('[IV-');
+      assert.equal(await page.locator('#chord-suggestions [role=option]').count(), 10);
+      await source.press('ArrowDown');
+      await source.press('Enter');
+      assert.equal(await source.inputValue(), '[IV-Maj9]');
+      assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem('tab data')).tabScript), '[IV-Maj9]');
+      await source.fill('');
+      await source.pressSequentially('[vii-su');
+      assert.equal(await page.locator('#chord-suggestions [role=option]').count(), 2);
+      await page.locator('#chord-suggestions [role=option]').last().dispatchEvent('pointerdown');
+      assert.equal(await source.inputValue(), '[vii-sus4]');
+      await source.fill('');
+      await source.pressSequentially('[ii-');
+      await source.press('Escape');
+      assert.equal(await page.locator('#chord-suggestions').isVisible(), false);
+      await source.fill('');
+      await source.pressSequentially('VIII-');
+      assert.equal(await page.locator('#chord-suggestions').isVisible(), false);
       await source.fill('[I]喔喔喔|尾声');
       await source.evaluate(el => el.setSelectionRange(3, 6));
       await page.locator('#split-lyrics').click();
