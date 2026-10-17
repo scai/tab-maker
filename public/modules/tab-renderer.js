@@ -6,6 +6,56 @@ const BLOCK_PATTERN = /(?:\[(?<chord>.+)\])?\s*(?:\((?<pitch>.+)\))?\s*(?:(?<lyr
 
 /** Renders supplied tab data without depending on the editor or app controls. */
 class TabRenderer {
+  constructor() {
+    this.tabRoot = document.getElementById('tab-body');
+    const schedule = () => {
+      cancelAnimationFrame(this.layoutFrame);
+      this.layoutFrame = requestAnimationFrame(() => this.layoutMeasures());
+    };
+    this.resizeObserver = new ResizeObserver(entries => {
+      const width = entries[0].contentRect.width;
+      if (width === this.lastWidth) return;
+      this.lastWidth = width;
+      schedule();
+    });
+    this.resizeObserver.observe(this.tabRoot);
+    this.appearanceObserver = new MutationObserver(schedule);
+    this.appearanceObserver.observe(this.tabRoot, { attributes: true, attributeFilter: ['style'] });
+    this.appearanceObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    document.fonts.ready.then(schedule);
+    document.fonts.addEventListener('loadingdone', schedule);
+  }
+
+  layoutMeasures() {
+    const available = this.tabRoot.clientWidth;
+    if (!available) return;
+    this.tabRoot.querySelectorAll('.tab-verse').forEach(verse => {
+      const lines = [...verse.children];
+      // Measure intrinsic contents, independent of the previous grid or wrapping.
+      verse.classList.add('measuring');
+      const widths = lines.map(line => [...line.children].map(measure => measure.getBoundingClientRect().width));
+      verse.classList.remove('measuring');
+      const maximum = Math.min(4, Math.max(...widths.map(line => line.length)));
+      const candidates = [...new Set([maximum, Math.min(2, maximum), 1])];
+      let columns;
+      for (const count of candidates) {
+        columns = Array(count).fill(0);
+        widths.forEach(line => line.forEach((width, index) => {
+          columns[index % count] = Math.max(columns[index % count], Math.ceil(width));
+        }));
+        if (columns.reduce((sum, width) => sum + width, 0) <= available || count === 1) break;
+      }
+      const total = columns.reduce((sum, width) => sum + width, 0);
+      const extra = Math.max(0, (available - total) / columns.length);
+      const template = columns.map(width => `${Math.min(available, width + extra)}px`).join(' ');
+      verse.style.setProperty('--measure-columns', template);
+      verse.dataset.columns = columns.length;
+      lines.forEach(line => [...line.children].forEach((measure, index) => {
+        measure.classList.toggle('measure-row-start', index % columns.length === 0);
+      }));
+    });
+  }
+
   renderBlock(b, key) {
     if (!b || b.length == 0) {
       return null;
@@ -76,12 +126,28 @@ class TabRenderer {
       }
     }
 
-    // Tab body
-    const sections = tabData.tabScript.trim().split('\n');
-    sections.forEach(s => {
-      const section = this.renderSection(s, key);
-      if (section) tabRoot.appendChild(section);
+    // Blank lines separate independently aligned verses. Preserve each source
+    // line, including short lines and pickups, rather than joining its measures.
+    let verse;
+    tabData.tabScript.trim().split(/\r?\n/).forEach(line => {
+      if (!line.trim()) { verse = null; return; }
+      const section = this.renderSection(line, key);
+      if (!section.childElementCount) return;
+      if (!line.includes('|') && !/\[[^\]]+\]/.test(line)) {
+        section.className = 'tab-lyrics';
+        tabRoot.appendChild(section);
+        verse = null;
+        return;
+      }
+      if (!verse) {
+        verse = document.createElement('div');
+        verse.className = 'tab-verse';
+        tabRoot.appendChild(verse);
+      }
+      section.className = 'tab-line';
+      verse.appendChild(section);
     });
+    this.layoutMeasures();
   }
 }
 

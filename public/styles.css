@@ -130,6 +130,41 @@ tab-maker-measure:hover {
   background-color: var(--hover);
 }
 
+.tab-verse { margin: 1em 0; }
+#tab-body .tab-line {
+  display: grid;
+  grid-template-columns: var(--measure-columns, minmax(0, 1fr));
+  row-gap: 1em;
+  margin: 1em 0;
+}
+.tab-line > tab-maker-measure {
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  flex-wrap: wrap;
+  border-left: 0;
+}
+.tab-line > .measure-row-start { border-left: solid 2px var(--border); }
+.tab-line tab-maker-block { max-width: calc(100% - 0.2em); overflow-wrap: anywhere; }
+.tab-verse.measuring .tab-line { display: block; }
+.tab-verse.measuring tab-maker-measure {
+  display: inline-flex;
+  width: max-content;
+  min-width: 4em;
+  flex-wrap: nowrap;
+  border-left: solid 2px var(--border);
+}
+.tab-verse.measuring tab-maker-block { max-width: none; flex-shrink: 0; }
+.tab-lyrics > tab-maker-measure {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.tab-lyrics tab-maker-block { max-width: 100%; overflow-wrap: anywhere; }
+
 .tab-info {
   margin: .5rem;
   padding-top: 12px;
