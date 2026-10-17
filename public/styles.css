@@ -139,19 +139,20 @@ tab-maker-measure:hover {
   list-style: none;
   display: flex;
   flex-direction: row;
+  align-items: center;
   margin: 0;
   padding: 0;
 }
 
 .tab-info ul li {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   margin-right: 1rem;
 }
 
 .tab-info ul li:has(#key-select) {
-  display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem;
 }
 
 #capo-position {
