@@ -15,6 +15,8 @@ The source editor colors chords, pitches, and notation separators, and saves edi
 
 Select lyrics and click **拆分歌词** to add a pitch placeholder to each character: `喔喔喔` becomes `(0)喔,(0)喔,(0)喔`. Spaces and line breaks are preserved. Undo restores the original selection in one step.
 
+Typing `[` or `(` inserts the matching closing character after the caret. Type a Roman chord degree followed by `-` (for example, `[IV-`) to suggest chord qualities. Keep typing to filter, use Up/Down to choose, and Enter or Tab to insert; click a suggestion to select it or press Escape to dismiss.
+
 * [English syntax guide](docs/syntax.en.md)
 * [中文记谱语法](docs/syntax.zh-CN.md)
 
